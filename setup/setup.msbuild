@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5"
+         DefaultTargets="Clean;Copy;Harvest;WIX"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         >
+
+  <Import Project="C:\Program Files (x86)\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"/>
+
+  <PropertyGroup>
+
+    <SourceDir>..\dist</SourceDir>
+    <MinGWDir>C:\Users\nminogiannis\Apps\MinGW\bin</MinGWDir>
+    <TempDir>..\temp</TempDir>
+    <!--<OutDir>..\temp</OutDir>-->
+    <OutDir>C:\Websites\Cloud4All</OutDir>
+
+    <WxsFile>dist.wxs</WxsFile>
+    <WixobjFile>dist.wixobj</WixobjFile>
+    <Version>$([System.DateTime]::Now.ToString(`yyMMdd.HHmmss`))</Version>
+    <MsiFile>GPII.$(Version).msi</MsiFile>
+  </PropertyGroup>
+
+  <!-- The list of WIX input files -->
+  <ItemGroup>
+    <WixCode Include="Product.wxs" />
+    <WixCode Include="$(TempDir)\$(WxsFile)" />
+    <WixCode Include="UI.wxs" />
+  </ItemGroup>
+
+  <!-- The list of WIX after candle files -->
+  <ItemGroup>
+    <WixObject Include="$(TempDir)\Product.wixobj" />
+    <WixObject Include="$(TempDir)\$(WixobjFile)" />
+    <WixObject Include="$(TempDir)\UI.wixobj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FilesToDelete Include="$(OutDir)\GPII*.*" />
+  </ItemGroup>
+
+  <Target Name="Clean">
+    <MSBuild.ExtensionPack.FileSystem.Folder TaskAction="RemoveContent" Path="$(TempDir)"/>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+
+  <Target Name="Update">
+
+  </Target>
+
+  <Target Name="Copy">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
+                                               Destination="$(TempDir)"
+                                               Files=""
+                                               Options="/S /E /XD .git"
+                                               />
+    <ItemGroup>
+      <NodeFix Include="$(TempDir)\node_modules\universal\node_modules\kettle\node_modules\infusion" />
+    </ItemGroup>
+    <RemoveDir Directories="@(NodeFix)" />
+    
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(TempDir)\windows\UsbUserListener\lib"
+                                               Destination="$(TempDir)\windows\UsbUserListener\bin"
+                                               Files="*.dll"
+                                               />
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(MinGWDir)"
+                                               Destination="$(TempDir)\windows\UsbUserListener\bin"
+                                               Files="*.dll"
+                                               />
+  </Target>
+
+  <!-- Define creating installer in another target -->
+  <Target Name="Harvest">
+
+    <!-- Harvest all content of published result -->
+    <Exec Command='$(WixPath)heat dir "$(TempDir)" -dr INSTALLFOLDER -ke -srd -cg ProductComponents -var var.publishDir -gg -out "$(TempDir)\$(WxsFile)"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+  </Target>
+
+  <Target Name="WIX">
+
+    <!--     At last create an installer -->
+    <Message Text="@(WixCode)"/>
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)light" -ext WixUIExtension -out $(OutDir)\$(MsiFile) @(WixObject, &apos; &apos;)'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+
+    <!-- A message at the end -->
+    <ItemGroup>
+      <DeletePdb Include="$(OutDir)\*.wixpdb" />
+    </ItemGroup>
+    <Delete Files="@(DeletePdb)" />
+
+    <Message Text="Install package has been created." />
+
+  </Target>
+</Project>
