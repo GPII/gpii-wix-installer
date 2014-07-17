@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?define ProductName = "GPII" ?>
+  <?define ProductManufacturer = "Cloud4All" ?>  
+  <?define ProductVersion = "$(fun.AutoVersion(1.0))" ?>
+  <?define UpgradeCode = "9ece615d-e499-44bc-9233-3d25b52e6bb7" ?>
+  
+  <?define RegistryKeyPath = "SOFTWARE\$(var.ProductName)" ?>
+
+  <Product Id="*"
+           Name="$(var.ProductName)"
+           Manufacturer="$(var.ProductManufacturer)"           
+           Version="$(var.ProductVersion)"
+           UpgradeCode="$(var.UpgradeCode)"
+           Language="1033"           
+           >
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" 
+             />
+    
+    <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="Setup" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut">
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="InstallPath"
+                       Type="string"
+                       Value="[INSTALLFOLDER]"
+                       KeyPath="yes"/>
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="Version"
+                       Type="string"
+                       Value="$(var.ProductVersion)"/>
+        <Shortcut Id="ExecutableShortcut"
+                  Name="Start $(var.ProductName)"
+                  Target="[INSTALLFOLDER]\start.cmd"
+                  WorkingDirectory="INSTALLFOLDER"
+                  />
+        <Shortcut Id="UninstallProduct"
+                  Name="Uninstall $(var.ProductName)"
+                  Target="[SystemFolder]msiexec.exe"
+                  Arguments="/x [ProductCode]"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="6D11DABF-F968-40F4-8A52-3DE02ED31AEF">
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="InstallPath"
+                       Type="string"
+                       Value="[INSTALLFOLDER]"
+                       KeyPath="yes"/>
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="Version"
+                       Type="string"
+                       Value="$(var.ProductVersion)"/>
+        <Shortcut Id="ExecutableDesktopShortcut"
+                  Name="Start $(var.ProductName)"
+                  Target="[INSTALLFOLDER]\start.cmd"
+                  WorkingDirectory="INSTALLFOLDER"
+                  />
+        <RemoveFolder Id="DesktopFolder" On="uninstall"/>
+      </Component>
+    </DirectoryRef>
+
+    <UIRef Id="GPII_UI" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <CustomAction Id="NpmInstall"
+                  Directory="INSTALLFOLDER"
+                  Execute="commit"
+                  Impersonate="no"
+                  Return="ignore"
+                  ExeCommand="[SystemFolder]\cmd /c &quot;cd /d &quot;&quot;[INSTALLFOLDER]\node_modules\universal&quot;&quot; &amp;&amp; npm install &quot;"
+                  />
+
+    <InstallExecuteSequence>
+      <Custom Action="NpmInstall" After="InstallFiles">NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+    </Directory>
+  </Fragment>
+
+</Wix>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     >
+	<Bundle Name="Bootstrapper" Version="1.0.0.0" Manufacturer="Cloud4All" UpgradeCode="9b098d7c-5dcd-4a5f-ae1c-ca38ad09d821">
+		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+
+		<Chain>
+      <PackageGroupRef Id="NodeJS" />
+		</Chain>
+	</Bundle>
+  <Fragment>
+    <PackageGroup Id="NodeJS">
+      <MsiPackage Id="NodeJS"
+                  DisplayName="Node.js"
+                  SourceFile=".\node-v0.10.29-x86.msi" 
+                  Permanent="yes"                  
+                  DisplayInternalUI="yes" 
+                  Visible="yes"
+                  InstallCondition="registrySearch"
+                  />
+    </PackageGroup>
+    <util:RegistrySearch Variable="registrySearch" Root="HKCU" Key="SOFTWARE\Node.js" Result="exists" />
+  </Fragment>
+</Wix>
