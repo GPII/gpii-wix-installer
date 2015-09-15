@@ -43,7 +43,6 @@ build/
 *.vssscc
 .builds
 *.pidb
-*.log
 *.scc
 
 # Visual C++ cache files
@@ -155,5 +154,10 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-dist/
-temp/
+.idea
+staging/node_modules
+staging/windows
+output
+temp
+
+/setup/build-alt.cmd

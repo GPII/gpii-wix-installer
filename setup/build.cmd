@@ -1,25 +1,27 @@
-path %path%;C:\Users\nminogiannis\Apps\MinGW\bin;C:\Users\nminogiannis\Apps\Wix;C:\Program Files (x86)\MSBuild\12.0\Bin
+pushd ..\staging
 
-pushd ..\dist\windows
-	call clean.cmd
+	rmdir /s /q node_modules
+    if not exist windows\\. git clone https://github.com/GPII/windows.git
 	
-	git reset --hard
-	git clean -fd
-	git pull
+	pushd .\windows
 
-	pushd .\UsbUserListener
-		mkdir bin
-		copy lib\libcurl.dll bin
-		call build.cmd
+		git reset --hard
+		git clean -fd
+		git pull
+			
+		call npm install --ignore-scripts=true
+		
+		pushd .\listeners
+			msbuild /p:Configuration=Release
+		popd
+		
+		call grunt build	
 	popd
 popd
 
-pushd ..\dist\node_modules\universal
-	git reset --hard
-	git clean -fd
-	git pull
-
-	call npm install
+pushd ..\
+	if not exist output\\. mkdir output
+	if not exist temp\\. mkdir temp
 popd
 
 msbuild setup.msbuild

@@ -8,11 +8,9 @@
 
   <PropertyGroup>
 
-    <SourceDir>..\dist</SourceDir>
-    <MinGWDir>C:\Users\nminogiannis\Apps\MinGW\bin</MinGWDir>
+    <SourceDir>..\staging</SourceDir>
     <TempDir>..\temp</TempDir>
-    <!--<OutDir>..\temp</OutDir>-->
-    <OutDir>C:\Websites\Cloud4All</OutDir>
+    <OutDir>..\output</OutDir>
 
     <WxsFile>dist.wxs</WxsFile>
     <WixobjFile>dist.wixobj</WixobjFile>
@@ -52,20 +50,7 @@
                                                Destination="$(TempDir)"
                                                Files=""
                                                Options="/S /E /XD .git"
-                                               />
-    <ItemGroup>
-      <NodeFix Include="$(TempDir)\node_modules\universal\node_modules\kettle\node_modules\infusion" />
-    </ItemGroup>
-    <RemoveDir Directories="@(NodeFix)" />
-    
-    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(TempDir)\windows\UsbUserListener\lib"
-                                               Destination="$(TempDir)\windows\UsbUserListener\bin"
-                                               Files="*.dll"
-                                               />
-    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(MinGWDir)"
-                                               Destination="$(TempDir)\windows\UsbUserListener\bin"
-                                               Files="*.dll"
-                                               />
+                                               />    
   </Target>
 
   <!-- Define creating installer in another target -->
