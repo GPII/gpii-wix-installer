@@ -11,7 +11,7 @@ Requirements for building GPII for Windows
 - Visual Studio 2013
 - Inno Setup
 
-Additional requirement for building the installer
+Additional requirements for building the installer
 -------------------------------------------------
 - Wix
 - MSBuild Extension Pack
