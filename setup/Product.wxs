@@ -29,6 +29,10 @@
       <ComponentRef Id="DesktopShortcut" />
     </Feature>
 
+    <Icon Id="GPII.ico" SourceFile="GPII.ico" />
+    <Icon Id="GPII_USBListener.ico" SourceFile="GPII_USBListener.ico" />
+    <Icon Id="GPII_RFIDListener.ico" SourceFile="GPII_RFIDListener.ico" />
+
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut">
         <RegistryValue Root="HKCU"
@@ -46,6 +50,17 @@
                   Name="Start $(var.ProductName)"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
+                  Icon="GPII.ico"
+                  />
+        <Shortcut Id="USBListenerShortcut"
+                  Name="Start USB Listener"
+                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_USBListener.exe"
+                  Icon="GPII_USBListener.ico"
+                  />
+        <Shortcut Id="RFIDListenerShortcut"
+                  Name="Start RFID Listener"
+                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_RFIDListener.exe"
+                  Icon="GPII_RFIDListener.ico"
                   />
         <Shortcut Id="UninstallProduct"
                   Name="Uninstall $(var.ProductName)"
@@ -72,6 +87,17 @@
                   Name="Start $(var.ProductName)"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
+                  Icon="GPII.ico"
+                  />
+        <Shortcut Id="USBListenerDesktopShortcut"
+                  Name="Start USB Listener"
+                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_USBListener.exe"
+                  Icon="GPII_USBListener.ico"
+                  />
+        <Shortcut Id="RFIDListenerDesktopShortcut"
+                  Name="Start RFID Listener"
+                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_RFIDListener.exe"
+                  Icon="GPII_RFIDListener.ico"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
@@ -79,19 +105,6 @@
 
     <UIRef Id="GPII_UI" />
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
-
-    <CustomAction Id="NpmInstall"
-                  Directory="INSTALLFOLDER"
-                  Execute="commit"
-                  Impersonate="no"
-                  Return="ignore"
-                  ExeCommand="[SystemFolder]\cmd /c &quot;cd /d &quot;&quot;[INSTALLFOLDER]\node_modules\universal&quot;&quot; &amp;&amp; npm install &quot;"
-                  />
-
-    <InstallExecuteSequence>
-      <Custom Action="NpmInstall" After="InstallFiles">NOT Installed</Custom>
-    </InstallExecuteSequence>
-
   </Product>
 
   <Fragment>
