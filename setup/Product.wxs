@@ -15,7 +15,7 @@
            UpgradeCode="$(var.UpgradeCode)"
            Language="1033"           
            >
-    <Package InstallerVersion="200" 
+    <Package InstallerVersion="405" 
              Compressed="yes" 
              InstallScope="perMachine" 
              />
@@ -28,6 +28,14 @@
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="DesktopShortcut" />
     </Feature>
+    
+    <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
+      <MergeRef Id="VCRedist"/>
+    </Feature>
+    
+    <DirectoryRef Id="TARGETDIR">
+      <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC120_CRT_x86.msm" DiskId="1" Language="0"/>
+    </DirectoryRef>
 
     <Icon Id="GPII.ico" SourceFile="GPII.ico" />
     <Icon Id="GPII_USBListener.ico" SourceFile="GPII_USBListener.ico" />
