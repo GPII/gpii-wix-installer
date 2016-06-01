@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <?define ProductName = "GPII" ?>
-  <?define ProductManufacturer = "Cloud4All" ?>  
+  <?define ProductManufacturer = "Raising the Floor" ?>  
   <?define ProductVersion = "$(fun.AutoVersion(1.0))" ?>
   <?define UpgradeCode = "9ece615d-e499-44bc-9233-3d25b52e6bb7" ?>
   
@@ -34,7 +34,7 @@
     </Feature>
     
     <DirectoryRef Id="TARGETDIR">
-      <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC120_CRT_x86.msm" DiskId="1" Language="0"/>
+      <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
     </DirectoryRef>
 
     <Icon Id="GPII.ico" SourceFile="GPII.ico" />
