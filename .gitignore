@@ -159,5 +159,3 @@ staging/node_modules
 staging/windows
 output
 temp
-
-/setup/build-alt.cmd
