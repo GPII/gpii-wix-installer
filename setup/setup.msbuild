@@ -11,6 +11,7 @@
     <SourceDir>..\staging</SourceDir>
     <TempDir>..\temp</TempDir>
     <OutDir>..\output</OutDir>
+	<ListenersDir>windows\listeners\bin\Release</ListenersDir>
 
     <WxsFile>dist.wxs</WxsFile>
     <WixobjFile>dist.wixobj</WixobjFile>
@@ -31,7 +32,7 @@
     <WixObject Include="$(TempDir)\$(WixobjFile)" />
     <WixObject Include="$(TempDir)\UI.wixobj" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <FilesToDelete Include="$(OutDir)\GPII*.*" />
   </ItemGroup>
@@ -46,11 +47,19 @@
   </Target>
 
   <Target Name="Copy">
+	
+	<!-- Universal CRT -->
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="Redist\ucrt"
+                                               Destination="$(SourceDir)\$(ListenersDir)"
+                                               Files=""
+                                               />											   
+	
+	<!-- Everything -->
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
                                                Destination="$(TempDir)"
                                                Files=""
                                                Options="/S /E /XD .git"
-                                               />    
+                                               />
   </Target>
 
   <!-- Define creating installer in another target -->
