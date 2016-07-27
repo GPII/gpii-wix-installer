@@ -1,20 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5"
-         DefaultTargets="Clean;Copy;Harvest;WIX"
+         DefaultTargets="Clean;GPII;USBListener;RFIDListener;UCRT;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
   <Import Project="C:\Program Files (x86)\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"/>
 
   <PropertyGroup>
-
     <SourceDir>..\staging</SourceDir>
     <TempDir>..\temp</TempDir>
     <OutDir>..\output</OutDir>
-	<ListenersDir>windows\listeners\bin\Release</ListenersDir>
-
-    <WxsFile>dist.wxs</WxsFile>
-    <WixobjFile>dist.wixobj</WixobjFile>
     <Version>$([System.DateTime]::Now.ToString(`yyMMdd.HHmmss`))</Version>
     <MsiFile>GPII.$(Version).msi</MsiFile>
   </PropertyGroup>
@@ -22,17 +17,19 @@
   <!-- The list of WIX input files -->
   <ItemGroup>
     <WixCode Include="Product.wxs" />
-    <WixCode Include="$(TempDir)\$(WxsFile)" />
     <WixCode Include="UI.wxs" />
   </ItemGroup>
 
   <!-- The list of WIX after candle files -->
   <ItemGroup>
     <WixObject Include="$(TempDir)\Product.wixobj" />
-    <WixObject Include="$(TempDir)\$(WixobjFile)" />
+    <WixObject Include="$(TempDir)\GPII.wixobj" />
+    <WixObject Include="$(TempDir)\USBListener.wixobj" />
+    <WixObject Include="$(TempDir)\RFIDListener.wixobj" />
+    <WixObject Include="$(TempDir)\UCRT.wixobj" />
     <WixObject Include="$(TempDir)\UI.wixobj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <FilesToDelete Include="$(OutDir)\GPII*.*" />
   </ItemGroup>
@@ -42,39 +39,70 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
 
-  <Target Name="Update">
-
-  </Target>
-
-  <Target Name="Copy">
-	
-	<!-- Universal CRT -->
-    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="Redist\ucrt"
-                                               Destination="$(SourceDir)\$(ListenersDir)"
-                                               Files=""
-                                               />											   
-	
-	<!-- Everything -->
+  <Target Name="GPII">
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
-                                               Destination="$(TempDir)"
+                                               Destination="$(TempDir)\GPII"
                                                Files=""
-                                               Options="/S /E /XD .git"
+                                               Options="/S /E"
                                                />
+    <RemoveDir Directories="$(TempDir)\GPII\windows\listeners" />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\GPII" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\GPII -dversion=$(Version) -o $(TempDir)\ $(TempDir)\GPII.wxs'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+
   </Target>
 
-  <!-- Define creating installer in another target -->
-  <Target Name="Harvest">
+  <Target Name="USBListener">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)\windows\listeners\bin\Release"
+                                               Destination="$(TempDir)\USBListener"
+                                               Files="GPII_USBListener.exe"
+                                               />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\USBListener" -dr LISTENERFOLDER -ke -srd -cg USBListener -var var.publishDir -gg -out "$(TempDir)\USBListener.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\USBListener -dversion=$(Version) -o $(TempDir)\ $(TempDir)\USBListener.wxs'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+  </Target>
 
-    <!-- Harvest all content of published result -->
-    <Exec Command='$(WixPath)heat dir "$(TempDir)" -dr INSTALLFOLDER -ke -srd -cg ProductComponents -var var.publishDir -gg -out "$(TempDir)\$(WxsFile)"'
+  <Target Name="RFIDListener">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)\windows\listeners\bin\Release"
+                                               Destination="$(TempDir)\RFIDListener"
+                                               Files="GPII_RFIDListener.exe"
+                                               />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\RFIDListener" -dr LISTENERFOLDER -ke -srd -cg RFIDListener -var var.publishDir -gg -out "$(TempDir)\RFIDListener.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\RFIDListener -dversion=$(Version) -o $(TempDir)\ $(TempDir)\RFIDListener.wxs'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+  </Target>
+
+  <Target Name="UCRT">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="Redist\ucrt"
+                                               Destination="$(TempDir)\UCRT"
+                                               Files=""
+                                               />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\UCRT" -dr LISTENERFOLDER -ke -srd -cg UCRT -var var.publishDir -gg -out "$(TempDir)\UCRT.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\UCRT -dversion=$(Version) -o $(TempDir)\ $(TempDir)\UCRT.wxs'
           ContinueOnError="false"
           WorkingDirectory="."
           />
   </Target>
 
   <Target Name="WIX">
-
-    <!--     At last create an installer -->
     <Message Text="@(WixCode)"/>
     <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
           ContinueOnError="false"
@@ -84,14 +112,10 @@
           ContinueOnError="false"
           WorkingDirectory="."
           />
-
-    <!-- A message at the end -->
     <ItemGroup>
       <DeletePdb Include="$(OutDir)\*.wixpdb" />
     </ItemGroup>
     <Delete Files="@(DeletePdb)" />
-
     <Message Text="Install package has been created." />
-
   </Target>
 </Project>
