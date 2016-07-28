@@ -159,3 +159,4 @@ staging/node_modules
 staging/windows
 output
 temp
+/setup/Setup.sln

@@ -27,6 +27,7 @@
   <ItemGroup>
     <Content Include="build.cmd" />
     <Content Include="setup.msbuild" />
+    <Content Include="staging.rcj" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

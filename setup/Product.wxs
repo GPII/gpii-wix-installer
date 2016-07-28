@@ -23,23 +23,41 @@
     <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
-    <Feature Id="ProductFeature" Title="Setup" Level="1">
-      <ComponentGroupRef Id="ProductComponents" />
+    <!-- Features -->
+    <Feature Id="GPIIFeature" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLFOLDER" AllowAdvertise="no" Absent="disallow">
+      <ComponentGroupRef Id="GPII" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="DesktopShortcut" />
     </Feature>
-    
+
+    <Feature Id="Listeners" Title="Listeners" AllowAdvertise="no">
+      <ComponentRef Id="Dummy" />
+      <Feature Id="USBListenerFeature" Title="USB Listener" AllowAdvertise="no">
+        <ComponentGroupRef Id="USBListener" />        
+        <ComponentGroupRef Id="UCRT" />
+        <ComponentRef Id="USBListenerShortcuts"/>
+        <ComponentRef Id="USBListenerDesktopShortcuts"/>
+      </Feature>
+      <Feature Id="RFIDListenerFeature" Title="RFID Listener" AllowAdvertise="no">
+        <ComponentGroupRef Id="RFIDListener" />
+        <ComponentGroupRef Id="UCRT" />
+        <ComponentRef Id="RFIDListenerShortcuts"/>
+        <ComponentRef Id="RFIDListenerDesktopShortcuts"/>
+      </Feature>
+    </Feature>
+
     <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="VCRedist"/>
     </Feature>
     
+    <!-- Components -->
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
     </DirectoryRef>
 
-    <Icon Id="GPII.ico" SourceFile="GPII.ico" />
-    <Icon Id="GPII_USBListener.ico" SourceFile="GPII_USBListener.ico" />
-    <Icon Id="GPII_RFIDListener.ico" SourceFile="GPII_RFIDListener.ico" />
+    <Icon Id="GPII.ico" SourceFile="GPII\GPII.ico" />
+    <Icon Id="GPII_USBListener.ico" SourceFile="GPII\GPII_USBListener.ico" />
+    <Icon Id="GPII_RFIDListener.ico" SourceFile="GPII\GPII_RFIDListener.ico" />
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut">
@@ -60,26 +78,43 @@
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="GPII.ico"
                   />
-        <Shortcut Id="USBListenerShortcut"
-                  Name="Start USB Listener"
-                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_USBListener.exe"
-                  Icon="GPII_USBListener.ico"
-                  />
-        <Shortcut Id="RFIDListenerShortcut"
-                  Name="Start RFID Listener"
-                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_RFIDListener.exe"
-                  Icon="GPII_RFIDListener.ico"
-                  />
         <Shortcut Id="UninstallProduct"
                   Name="Uninstall $(var.ProductName)"
                   Target="[SystemFolder]msiexec.exe"
                   Arguments="/x [ProductCode]"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
       </Component>
+      <Component Id="USBListenerShortcuts" Guid="{848532D6-C46F-4989-84AF-1EF84A705D29}">
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="USBListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"
+                       />
+        <Shortcut Id="USBListenerShortcut"
+                  Name="Start USB Listener"
+                  Target="[LISTENERFOLDER]\GPII_USBListener.exe"
+                  Icon="GPII_USBListener.ico"
+                  />
+      </Component>
+      <Component Id="RFIDListenerShortcuts" Guid="{9DB70181-7CA2-42D1-85BE-9542BCD5967E}">
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="RFIDListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"/>
+        <Shortcut Id="RFIDListenerShortcut" 
+                  Name="Start RFID Listener"
+                  Target="[LISTENERFOLDER]\GPII_RFIDListener.exe"
+                  Icon="GPII_RFIDListener.ico"
+                  />
+      </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="DesktopFolder">
-      <Component Id="DesktopShortcut" Guid="6D11DABF-F968-40F4-8A52-3DE02ED31AEF">
+      <Component Id="DesktopShortcut" Guid="{6D11DABF-F968-40F4-8A52-3DE02ED31AEF}">
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="InstallPath"
@@ -97,28 +132,60 @@
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="GPII.ico"
                   />
-        <Shortcut Id="USBListenerDesktopShortcut"
-                  Name="Start USB Listener"
-                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_USBListener.exe"
-                  Icon="GPII_USBListener.ico"
-                  />
-        <Shortcut Id="RFIDListenerDesktopShortcut"
-                  Name="Start RFID Listener"
-                  Target="[INSTALLFOLDER]\windows\listeners\bin\Release\GPII_RFIDListener.exe"
-                  Icon="GPII_RFIDListener.ico"
-                  />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
+      <Component Id="USBListenerDesktopShortcuts" Guid="{75D82AC8-A92F-4DA2-A26A-A47470F33667}">
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="USBListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"
+                       />
+        <Shortcut Id="USBListenerDesktopShortcut"
+                  Name="Start USB Listener"
+                  Target="[LISTENERFOLDER]\GPII_USBListener.exe"
+                  Icon="GPII_USBListener.ico"
+                  />
+      </Component>
+      <Component Id="RFIDListenerDesktopShortcuts" Guid="{F6AE5315-4833-4EE0-A0D7-C9C50EE9AA49}">
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="RFIDListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"
+                       />
+        <Shortcut Id="RFIDListenerDesktopShortcut"
+                  Name="Start RFID Listener"
+                  Target="[LISTENERFOLDER]\GPII_RFIDListener.exe"
+                  Icon="GPII_RFIDListener.ico"
+                  />
+      </Component>
     </DirectoryRef>
+    
+    <Component Id="Dummy" Directory="LISTENERFOLDER" Guid="{2F28061A-EF7D-4795-8FD4-2B7724212166}">
+      <RegistryValue Root="HKCU"
+                     Key="$(var.RegistryKeyPath)"
+                     Name="ListenerPath"
+                     Type="string"
+                     Value="[LISTENERFOLDER]"
+                     KeyPath="yes"
+                     />
+    </Component>
 
+    <!-- UI Configuration -->
     <UIRef Id="GPII_UI" />
-    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />    
   </Product>
 
+  <!-- Folder structure -->
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+          <Directory Id="LISTENERFOLDER" Name="listeners" />
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
@@ -126,5 +193,4 @@
       <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
   </Fragment>
-
 </Wix>
