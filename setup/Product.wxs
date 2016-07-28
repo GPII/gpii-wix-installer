@@ -23,6 +23,23 @@
     <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
+    <!-- Custom properties -->
+    <Property Admin="yes" Id="SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="DESKTOP_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="START_MENU_SHORTCUTS" Value="1" />
+
+    <Property Admin="yes" Id="GPII_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="GPII_DESKTOP_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="GPII_START_MENU_SHORTCUTS" Value="1" />
+
+    <Property Admin="yes" Id="USB_LISTENER_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="USB_LISTENER_DESKTOP_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="USB_LISTENER_START_MENU_SHORTCUTS" Value="1" />
+
+    <Property Admin="yes" Id="RFID_LISTENER_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="RFID_LISTENER_DESKTOP_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="RFID_LISTENER_START_MENU_SHORTCUTS" Value="1" />
+
     <!-- Features -->
     <Feature Id="GPIIFeature" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLFOLDER" AllowAdvertise="no" Absent="disallow">
       <ComponentGroupRef Id="GPII" />
@@ -61,6 +78,7 @@
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut">
+        <Condition>SHORTCUTS="1" AND START_MENU_SHORTCUTS="1" AND GPII_SHORTCUTS="1" AND GPII_START_MENU_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="InstallPath"
@@ -85,6 +103,7 @@
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
       </Component>
       <Component Id="USBListenerShortcuts" Guid="{848532D6-C46F-4989-84AF-1EF84A705D29}">
+        <Condition>SHORTCUTS="1" AND START_MENU_SHORTCUTS="1" AND USB_LISTENER_SHORTCUTS="1" AND USB_LISTENER_START_MENU_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="USBListener"
@@ -99,6 +118,7 @@
                   />
       </Component>
       <Component Id="RFIDListenerShortcuts" Guid="{9DB70181-7CA2-42D1-85BE-9542BCD5967E}">
+        <Condition>SHORTCUTS="1" AND START_MENU_SHORTCUTS="1" AND RFID_LISTENER_SHORTCUTS="1" AND RFID_LISTENER_START_MENU_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="RFIDListener"
@@ -115,6 +135,7 @@
 
     <DirectoryRef Id="DesktopFolder">
       <Component Id="DesktopShortcut" Guid="{6D11DABF-F968-40F4-8A52-3DE02ED31AEF}">
+        <Condition>SHORTCUTS="1" AND DESKTOP_SHORTCUTS="1" AND GPII_SHORTCUTS="1" AND GPII_DESKTOP_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="InstallPath"
@@ -135,6 +156,7 @@
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
       <Component Id="USBListenerDesktopShortcuts" Guid="{75D82AC8-A92F-4DA2-A26A-A47470F33667}">
+        <Condition>SHORTCUTS="1" AND DESKTOP_SHORTCUTS="1" AND USB_LISTENER_SHORTCUTS="1" AND USB_LISTENER_DESKTOP_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="USBListener"
@@ -149,6 +171,7 @@
                   />
       </Component>
       <Component Id="RFIDListenerDesktopShortcuts" Guid="{F6AE5315-4833-4EE0-A0D7-C9C50EE9AA49}">
+        <Condition>SHORTCUTS="1" AND DESKTOP_SHORTCUTS="1" AND RFID_LISTENER_SHORTCUTS="1" AND RFID_LISTENER_DESKTOP_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="RFIDListener"
