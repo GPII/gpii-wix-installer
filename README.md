@@ -61,5 +61,6 @@ The list of possible properties include:
 | GPII_SHORTCUTS<br/>GPII_DESKTOP_SHORTCUTS<br/>GPII_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the main GPII platform |
 | USB_LISTENER_SHORTCUTS<br/>USB_LISTENER_DESKTOP_SHORTCUTS<br/>USB_LISTENER_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the USB Listener |
 | RFID_LISTENER_SHORTCUTS<br/>RFID_LISTENER_DESKTOP_SHORTCUTS<br/>RFID_LISTENER_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the RFID Listener |
+| GPII_AUTOSTART<br/>RFID_LISTENER_AUTOSTART<br/>USB_LISTENER_AUTOSTART | `0` **(Default)** or `1` | Whether or not to autostart the respective component on Windows sign in |
 
 An exhaustive list of other properties can be found at the [Windows Installer Guide](https://msdn.microsoft.com/en-us/library/windows/desktop/aa370905(v=vs.85).aspx).
