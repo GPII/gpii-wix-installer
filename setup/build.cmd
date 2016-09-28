@@ -1,12 +1,11 @@
 rem Staging
-rem Edit staging.rcj and then uncomment the following lines	as needed
-	
+
+rem Edit staging.rcj and then uncomment the following lines	as needed	
 rem rmdir /s /q ..\staging\windows
 rem robocopy /job:staging.rcj
 	
 pushd ..\staging\windows
-	rem call npm prune --production
-	rem call npm dedupe	
+	call npm prune --production
 popd
 		
 pushd ..\
