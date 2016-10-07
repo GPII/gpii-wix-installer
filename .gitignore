@@ -155,6 +155,7 @@ $RECYCLE.BIN/
 .DS_Store
 
 .idea
+staging/node.exe
 staging/node_modules
 staging/windows
 output
