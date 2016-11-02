@@ -1,14 +1,3 @@
-
-::
-:: Source Directory : Main GPII repository (https://github.com/GPII/windows)
-::
-	/SD:C:\projects\gpii\windows\	:: Source Directory.
-
-::
-:: Destination Directory
-::
-	/DD:..\staging\windows\	:: Destination Directory.
-
 ::
 :: Include These Files :
 ::
@@ -21,9 +10,6 @@
 	/XD		:: eXclude Directories matching these names
 		.git
 		.vagrant
-		C:\projects\gpii\windows\provisioning
-		C:\projects\gpii\windows\listeners\GPII_RFIDListener\build
-		C:\projects\gpii\windows\listeners\GPII_USBListener\build
 
 ::
 :: Exclude These Files :

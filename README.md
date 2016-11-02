@@ -11,7 +11,7 @@ Make sure MSBuild and the WiX folder are in the path.
 
 ### Staging
 - Build GPII/windows (including the listeners - see https://github.com/GPII/windows/blob/master/provisioning/build.bat)
-- Edit [`setup/staging.rcj`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/staging.rcj) and replace `C:\projects\gpii\windows\` with the path of your local GPII/windows repository
+- Edit line 10 of [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd) and replace `C:\projects\gpii\windows` with the path of your local GPII/windows repository (**no** trailing backslash)
 - Run [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd)
 
 Staging makes a private copy of the GPII/windows repository inside the `staging` folder and uses that for building the installer. Any files not needed (eg Git and Vagrant related folders) are excluded. 
