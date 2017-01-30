@@ -1,25 +1,18 @@
-Copyright (c) 2012-15, Members of the Raising the Floor Consortium.
+Copyright (c) 2012-17
+Members of the Raising the Floor Consortium
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+This is a test version of GPII. You will install the software on your computer
+for testing, and uninstall it at the end of the test.
 
- * Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
- * Neither the name of OCAD University nor the names of its contributors may
-   be used to endorse or promote products derived from this software without
-   specific prior written permission.
+Please do not share it or give it to anyone else, because this just a test
+version and still under development. This version also has tracking code in
+it for this test.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+A public release version, which can be distributed, is being developed.  
+
+DISCLAIMER:
+This software is provided “as is.” Raising the Floor and those who wrote
+the software are not responsible for any damage to your computer or any other
+problems that might happen because you use this software, no matter what the
+reason, even if they have been told of the possibility that something might go wrong. 
