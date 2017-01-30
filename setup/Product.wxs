@@ -259,8 +259,8 @@
     <!-- UI Configuration -->
     <UIRef Id="GPII_UI" />
     <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\GPII-banner.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\GPII-dialog.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="GPII\Bitmaps\GPII-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="GPII\Bitmaps\GPII-dialog.bmp" />
   </Product>
 
   <!-- Folder structure -->
