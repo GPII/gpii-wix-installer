@@ -1,4 +1,3 @@
-echo off
-set NODE_ENV=gpii.config.all.development.dr.production
+@echo off
 cd windows
-start /min ..\node.exe gpii.js
+start /min gpii-app.exe
