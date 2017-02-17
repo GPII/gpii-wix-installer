@@ -17,7 +17,7 @@
   <!-- The list of WIX input files -->
   <ItemGroup>
     <WixCode Include="Product.wxs" />
-    <WixCode Include="UI.wxs" />
+    <WixCode Include="UI_HST.wxs" />
   </ItemGroup>
 
   <!-- The list of WIX after candle files -->
@@ -27,7 +27,7 @@
     <WixObject Include="$(TempDir)\USBListener.wixobj" />
     <WixObject Include="$(TempDir)\RFIDListener.wixobj" />
     <WixObject Include="$(TempDir)\UCRT.wixobj" />
-    <WixObject Include="$(TempDir)\UI.wixobj" />
+    <WixObject Include="$(TempDir)\UI_HST.wixobj" />
   </ItemGroup>
 
   <ItemGroup>
