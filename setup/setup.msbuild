@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5"
-         DefaultTargets="Clean;GPII;USBListener;RFIDListener;UCRT;WIX"
+         DefaultTargets="Clean;GPII;USBListener;RFIDListener;UCRT;HSTTOOLS;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
@@ -27,6 +27,7 @@
     <WixObject Include="$(TempDir)\USBListener.wixobj" />
     <WixObject Include="$(TempDir)\RFIDListener.wixobj" />
     <WixObject Include="$(TempDir)\UCRT.wixobj" />
+    <WixObject Include="$(TempDir)\HSTTOOLS.wixobj" />
     <WixObject Include="$(TempDir)\UI_HST.wixobj" />
   </ItemGroup>
 
@@ -97,6 +98,21 @@
           WorkingDirectory="."
           />
     <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\UCRT -dversion=$(Version) -o $(TempDir)\ $(TempDir)\UCRT.wxs'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+  </Target>
+
+  <Target Name="HSTTOOLS">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)\gpii-hst-tools"
+                                               Destination="$(TempDir)\HSTTOOLS"
+                                               Files=""
+                                               />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\HSTTOOLS" -dr HSTTOOLSFOLDER "$(TempDir)\HSTTOOLS" -ke -srd -cg HSTTOOLS -var var.publishDir -gg -out "$(TempDir)\HSTTOOLS.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\HSTTOOLS -dversion=$(Version) -o $(TempDir)\ $(TempDir)\HSTTOOLS.wxs'
           ContinueOnError="false"
           WorkingDirectory="."
           />

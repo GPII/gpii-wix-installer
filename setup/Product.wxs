@@ -72,7 +72,12 @@
     <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="VCRedist"/>
     </Feature>
-    
+
+    <Feature Id="HSTTOOLS" Title="APCP Hardware Sensitivity Tests" AllowAdvertise="no">
+      <ComponentRef Id="Psinfo.exe" />
+      <ComponentRef Id="System_Information.bat" />
+    </Feature>
+
     <!-- Components -->
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
@@ -193,6 +198,30 @@
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="HSTToolsFolder">
+      <Component Id="Psinfo.exe" Guid="{8f6db0c8-a912-4580-9c07-bd3b244401ed}" Permanent="yes" >
+          <File Id="Psinfo.exe" Source="HSTTOOLS\Psinfo.exe" />
+          <RegistryValue Root="HKCU"
+                         Key="$(var.RegistryKeyPath)"
+                         Name="Psinfo.exe"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes"
+                         />
+          <RemoveFolder Id="HSTToolsFolder" On="uninstall"/>
+      </Component>
+      <Component Id="System_Information.bat" Guid="{e3f9e4d0-f80e-4684-8ced-f231bf0d5254}" Permanent="yes" >
+          <File Id="System_Information.bat" Source="HSTTOOLS\System_Information.bat" />
+          <RegistryValue Root="HKCU"
+                         Key="$(var.RegistryKeyPath)"
+                         Name="System_Information.bat"
+                         Type="integer"
+                         Value="1"
+                         KeyPath="yes"
+                         />
+      </Component>
+    </DirectoryRef>
+
     <DirectoryRef Id="StartupFolder">
       <Component Id="StartupShortcut" Guid="{1FD6D8C0-3024-44E8-AF1E-46167B836B99}">
         <Condition>GPII_AUTOSTART="1"</Condition>
@@ -274,8 +303,10 @@
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
       </Directory>
-      <Directory Id="DesktopFolder" Name="Desktop" />
-      <Directory Id="StartupFolder" Name="Startup" />      
+      <Directory Id="DesktopFolder" Name="Desktop">
+        <Directory Id="HSTToolsFolder" Name="APCP Hardware Sensitivity Testing Tools" />
+      </Directory>
+      <Directory Id="StartupFolder" Name="Startup" />
     </Directory>
   </Fragment>
 </Wix>
