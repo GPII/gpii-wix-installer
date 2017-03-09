@@ -32,16 +32,19 @@
     <Property Admin="yes" Id="GPII_DESKTOP_SHORTCUTS" Value="1" />
     <Property Admin="yes" Id="GPII_START_MENU_SHORTCUTS" Value="1" />
     <Property Admin="yes" Id="GPII_AUTOSTART" Value="0" />
+    <Property Admin="yes" Id="GPII_START_AFTER_INSTALLATION" Value="0" />
 
     <Property Admin="yes" Id="USB_LISTENER_SHORTCUTS" Value="1" />
-    <Property Admin="yes" Id="USB_LISTENER_DESKTOP_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="USB_LISTENER_DESKTOP_SHORTCUTS" Value="0" />
     <Property Admin="yes" Id="USB_LISTENER_START_MENU_SHORTCUTS" Value="1" />
-    <Property Admin="yes" Id="USB_LISTENER_AUTOSTART" Value="0" />
+    <Property Admin="yes" Id="USB_LISTENER_AUTOSTART" Value="1" />
+    <Property Admin="yes" Id="USB_LISTENER_START_AFTER_INSTALLATION" Value="1" />
 
     <Property Admin="yes" Id="RFID_LISTENER_SHORTCUTS" Value="1" />
-    <Property Admin="yes" Id="RFID_LISTENER_DESKTOP_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="RFID_LISTENER_DESKTOP_SHORTCUTS" Value="0" />
     <Property Admin="yes" Id="RFID_LISTENER_START_MENU_SHORTCUTS" Value="1" />
-    <Property Admin="yes" Id="RFID_LISTENER_AUTOSTART" Value="0" />
+    <Property Admin="yes" Id="RFID_LISTENER_AUTOSTART" Value="1" />
+    <Property Admin="yes" Id="RFID_LISTENER_START_AFTER_INSTALLATION" Value="1" />
 
     <!-- Features -->
     <Feature Id="GPIIFeature" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLFOLDER" AllowAdvertise="no" Absent="disallow">
@@ -273,6 +276,24 @@
                      KeyPath="yes"
                      />
     </Component>
+
+    <!-- We use asyncNoWait in order to not wait for their return codes -->
+    <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="RunRFIDListener" ExeCommand="[LISTENERFOLDER]\GPII_RFIDListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="RunUSBListener" ExeCommand="[LISTENERFOLDER]\GPII_USBListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+  
+    <!-- Install execute sequence of custom actions -->
+    <InstallExecuteSequence>
+      <Custom Action="RunGPII" After="InstallFinalize">
+          GPII_START_AFTER_INSTALLATION
+      </Custom>
+      <Custom Action="RunRFIDListener" After="InstallFinalize">
+          RFID_LISTENER_START_AFTER_INSTALLATION
+      </Custom>
+      <Custom Action="RunUSBListener" After="InstallFinalize">
+          USB_LISTENER_START_AFTER_INSTALLATION
+      </Custom>
+    </InstallExecuteSequence>
 
     <!-- UI Configuration -->
     <UIRef Id="GPII_UI" />
