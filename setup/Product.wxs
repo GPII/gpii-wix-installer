@@ -74,7 +74,6 @@
     </Feature>
 
     <Feature Id="HSTTOOLS" Title="APCP Hardware Sensitivity Tests" AllowAdvertise="no">
-      <ComponentRef Id="Psinfo.exe" />
       <ComponentRef Id="System_Information.bat" />
     </Feature>
 
@@ -199,17 +198,6 @@
     </DirectoryRef>
 
     <DirectoryRef Id="HSTToolsFolder">
-      <Component Id="Psinfo.exe" Guid="{8f6db0c8-a912-4580-9c07-bd3b244401ed}" Permanent="yes" >
-          <File Id="Psinfo.exe" Source="HSTTOOLS\Psinfo.exe" />
-          <RegistryValue Root="HKCU"
-                         Key="$(var.RegistryKeyPath)"
-                         Name="Psinfo.exe"
-                         Type="integer"
-                         Value="1"
-                         KeyPath="yes"
-                         />
-          <RemoveFolder Id="HSTToolsFolder" On="uninstall"/>
-      </Component>
       <Component Id="System_Information.bat" Guid="{e3f9e4d0-f80e-4684-8ced-f231bf0d5254}" Permanent="yes" >
           <File Id="System_Information.bat" Source="HSTTOOLS\System_Information.bat" />
           <RegistryValue Root="HKCU"
@@ -219,6 +207,7 @@
                          Value="1"
                          KeyPath="yes"
                          />
+          <RemoveFolder Id="HSTToolsFolder" On="uninstall"/>
       </Component>
     </DirectoryRef>
 
