@@ -285,13 +285,13 @@
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
       <Custom Action="RunGPII" After="InstallFinalize">
-          GPII_START_AFTER_INSTALLATION
+          GPII_START_AFTER_INSTALLATION="1"
       </Custom>
       <Custom Action="RunRFIDListener" After="InstallFinalize">
-          RFID_LISTENER_START_AFTER_INSTALLATION
+          RFID_LISTENER_START_AFTER_INSTALLATION="1"
       </Custom>
       <Custom Action="RunUSBListener" After="InstallFinalize">
-          USB_LISTENER_START_AFTER_INSTALLATION
+          USB_LISTENER_START_AFTER_INSTALLATION="1"
       </Custom>
     </InstallExecuteSequence>
 
