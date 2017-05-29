@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5"
-         DefaultTargets="Clean;GPII;USBListener;RFIDListener;UCRT;WIX"
+         DefaultTargets="Clean;GPII;USBListener;RFIDListener;UCRT;WIX;Signing"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
@@ -118,4 +118,21 @@
     <Delete Files="@(DeletePdb)" />
     <Message Text="Install package has been created." />
   </Target>
+
+    <Target Name="Signing">
+        <MSBuild.ExtensionPack.Computer.EnvironmentVariable TaskAction="Get" Variable="GPII_SIGNING_CERT">
+            <Output PropertyName="SigningCert" TaskParameter="Value"/>
+        </MSBuild.ExtensionPack.Computer.EnvironmentVariable>
+        <MSBuild.ExtensionPack.Computer.EnvironmentVariable TaskAction="Get" Variable="GPII_SIGNING_CERT_PASSWORD">
+            <Output PropertyName="SigningCertPassword" TaskParameter="Value"/>
+        </MSBuild.ExtensionPack.Computer.EnvironmentVariable>
+        <MSBuild.ExtensionPack.Computer.EnvironmentVariable TaskAction="Get" Variable="GPII_SIGNING_DESCRIPTION">
+            <Output PropertyName="SigningDescription" TaskParameter="Value"/>
+        </MSBuild.ExtensionPack.Computer.EnvironmentVariable>
+        <Exec Command='signtool sign /f $(SigningCert) /p $(SigningCertPassword) /d $(SigningDescription) /t http://timestamp.verisign.com/scripts/timstamp.dll /v $(OutDir)\$(MsiFile)' 
+              Condition="Exists($(SigningCert))"
+              ContinueOnError="false"
+              WorkingDirectory="."
+              />
+    </Target>
 </Project>
