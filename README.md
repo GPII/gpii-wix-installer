@@ -10,7 +10,7 @@
 Make sure MSBuild and the WiX folder are in the path.
 
 ### Staging
-- Build GPII/windows (including the listeners - see https://github.com/GPII/windows/blob/master/provisioning/build.bat)
+- Build GPII/windows (including the listeners - see https://github.com/GPII/windows/tree/master/provisioning)
 - Edit line 10 of [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd) and replace `C:\projects\gpii\windows` with the path of your local GPII/windows repository (**no** trailing backslash)
 - Run [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd)
 
@@ -18,6 +18,16 @@ Staging makes a private copy of the GPII/windows repository inside the `staging`
 
 After running `build.cmd`, an MSI file can be found in the `output` folder.  
 Whenever there are changes to the local GPII/windows repository, rerun `build.cmd` to make a new installer.
+
+### Signing
+The MSI file can be optionally signed in the last step of the build. 
+
+You will need a code signing certificate in the PKCS#12/PFX format.
+- Set the `GPII_SIGNING_CERT` environment variable with the location of the certificate (eg `C:\gpii\my_certificate.pfx`)
+- Set the `GPII_SIGNING_CERT_PASSWORD` environment variable with the PFX password (or `""` if none)
+- Set the `GPII_SIGNING_DESCRIPTION` environment variable with a description (eg `"GPII Installer"`)
+
+Use double quotes if there are spaces in any of the values. 
 
 ## Unattended installation
 The installer is a standard MSI file and as such it can be also executed using `msiexec.exe` and supports all the [command-line options](https://msdn.microsoft.com/en-us/library/windows/desktop/aa367988(v=vs.85).aspx) available to `msiexec.exe`.
