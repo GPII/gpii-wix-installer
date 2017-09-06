@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5"
-         DefaultTargets="Clean;GPII;USBListener;RFIDListener;ProimityListener;UCRT;HSTTOOLS;WIX"
+         DefaultTargets="Clean;GPII;USBListener;RFIDListener;ProximityListener;UCRT;HSTTOOLS;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
