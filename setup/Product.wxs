@@ -70,6 +70,13 @@
         <ComponentRef Id="RFIDListenerDesktopShortcuts"/>
         <ComponentRef Id="RFIDListenerStartupShortcuts"/>
       </Feature>
+       <Feature Id="ProximityListenerFeature" Title="Proximity Listener" AllowAdvertise="no">
+        <ComponentGroupRef Id="ProximityListener" />
+        <ComponentGroupRef Id="UCRT" />
+        <ComponentRef Id="ProximityListenerShortcuts"/>
+        <ComponentRef Id="ProximityListenerDesktopShortcuts"/>
+        <ComponentRef Id="ProximityListenerStartupShortcuts"/>
+      </Feature>
     </Feature>
 
     <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
@@ -145,6 +152,20 @@
                   Icon="GPII_RFIDListener.ico"
                   />
       </Component>
+      <Component Id="ProximityListenerShortcuts" Guid="{49d930f6-a284-4695-8a14-247867e46c0d}">
+        <Condition>SHORTCUTS="1" AND START_MENU_SHORTCUTS="1" AND PROXIMITY_LISTENER_SHORTCUTS="1" AND PROXIMIYY_LISTENER_START_MENU_SHORTCUTS="1"</Condition>
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="ProximityListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"/>
+        <Shortcut Id="ProximityListenerShortcut"
+                  Name="Start Proximity Listener"
+                  Target="[LISTENERFOLDER]\GPIIWindowsProximityListener.exe"
+                  Icon="GPII_RFIDListener.ico"
+                  />
+      </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="DesktopFolder">
@@ -196,6 +217,21 @@
         <Shortcut Id="RFIDListenerDesktopShortcut"
                   Name="Start RFID Listener"
                   Target="[LISTENERFOLDER]\GPII_RFIDListener.exe"
+                  Icon="GPII_RFIDListener.ico"
+                  />
+      </Component>
+      <Component Id="ProximityListenerDesktopShortcuts" Guid="{4b3428bd-2011-40a8-ae3a-4ab88b38c7d6}">
+        <Condition>SHORTCUTS="1" AND DESKTOP_SHORTCUTS="1" AND PROXIMITY_LISTENER_SHORTCUTS="1" AND PROXIMITY_LISTENER_DESKTOP_SHORTCUTS="1"</Condition>
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="ProximityListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"
+                       />
+        <Shortcut Id="ProximityListenerDesktopShortcut"
+                  Name="Start Proximity Listener"
+                  Target="[LISTENERFOLDER]\GPIIWindowsProximityListener"
                   Icon="GPII_RFIDListener.ico"
                   />
       </Component>
@@ -278,6 +314,21 @@
                   Icon="GPII_RFIDListener.ico"
                   />
       </Component>
+      <Component Id="ProximityListenerStartupShortcuts" Guid="{2708db1a-0ae5-4df7-afc4-b846e35fedd5}">
+        <Condition>PROXIMITY_LISTENER_AUTOSTART="1"</Condition>
+        <RegistryValue Root="HKCU"
+                       Key="$(var.RegistryKeyPath)"
+                       Name="ProximityListener"
+                       Type="integer"
+                       Value="1"
+                       KeyPath="yes"
+                       />
+        <Shortcut Id="ProximityListenerStartupShortcut"
+                  Name="Start Proximity Listener"
+                  Target="[LISTENERFOLDER]\GPIIWindowsProximityListener.exe"
+                  Icon="GPII_RFIDListener.ico"
+                  />
+      </Component>
     </DirectoryRef>
 
     <Component Id="Dummy" Directory="LISTENERFOLDER" Guid="{2F28061A-EF7D-4795-8FD4-2B7724212166}">
@@ -294,7 +345,8 @@
     <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="RunRFIDListener" ExeCommand="[LISTENERFOLDER]\GPII_RFIDListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="RunUSBListener" ExeCommand="[LISTENERFOLDER]\GPII_USBListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
-  
+    <CustomAction Id="RunProximityListener" ExeCommand="[LISTENERFOLDER]\GPIIWindowsProximityListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
       <Custom Action="RunGPII" After="InstallFinalize">
@@ -305,6 +357,9 @@
       </Custom>
       <Custom Action="RunUSBListener" After="InstallFinalize">
           USB_LISTENER_START_AFTER_INSTALLATION="1"
+      </Custom>
+      <Custom Action="RunProximityListener" After="InstallFinalize">
+          PROXIMITY_LISTENER_START_AFTER_INSTALLATION="1"
       </Custom>
     </InstallExecuteSequence>
 
