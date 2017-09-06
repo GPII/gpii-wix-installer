@@ -46,6 +46,12 @@
     <Property Admin="yes" Id="RFID_LISTENER_AUTOSTART" Value="1" />
     <Property Admin="yes" Id="RFID_LISTENER_START_AFTER_INSTALLATION" Value="1" />
 
+    <Property Admin="yes" Id="PROXIMITY_LISTENER_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="PROXIMITY_LISTENER_DESKTOP_SHORTCUTS" Value="0" />
+    <Property Admin="yes" Id="PROXIMITY_LISTENER_START_MENU_SHORTCUTS" Value="1" />
+    <Property Admin="yes" Id="PROXIMITY_LISTENER_AUTOSTART" Value="1" />
+    <Property Admin="yes" Id="PROXIMITY_LISTENER_START_AFTER_INSTALLATION" Value="1" />
+
     <!-- Features -->
     <Feature Id="GPIIFeature" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLFOLDER" AllowAdvertise="no" Absent="disallow">
       <ComponentGroupRef Id="GPII" />
