@@ -159,7 +159,7 @@
                   />
       </Component>
       <Component Id="ProximityListenerShortcuts" Guid="{49d930f6-a284-4695-8a14-247867e46c0d}">
-        <Condition>SHORTCUTS="1" AND START_MENU_SHORTCUTS="1" AND PROXIMITY_LISTENER_SHORTCUTS="1" AND PROXIMIYY_LISTENER_START_MENU_SHORTCUTS="1"</Condition>
+        <Condition>SHORTCUTS="1" AND START_MENU_SHORTCUTS="1" AND PROXIMITY_LISTENER_SHORTCUTS="1" AND PROXIMITY_LISTENER_START_MENU_SHORTCUTS="1"</Condition>
         <RegistryValue Root="HKCU"
                        Key="$(var.RegistryKeyPath)"
                        Name="ProximityListener"
