@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5"
-         DefaultTargets="Clean;GPII;USBListener;RFIDListener;UCRT;HSTTOOLS;WIX"
+         DefaultTargets="Clean;GPII;USBListener;RFIDListener;ProximityListener;UCRT;HSTTOOLS;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
@@ -26,6 +26,7 @@
     <WixObject Include="$(TempDir)\GPII.wixobj" />
     <WixObject Include="$(TempDir)\USBListener.wixobj" />
     <WixObject Include="$(TempDir)\RFIDListener.wixobj" />
+    <WixObject Include="$(TempDir)\ProximityListener.wixobj" />
     <WixObject Include="$(TempDir)\UCRT.wixobj" />
     <WixObject Include="$(TempDir)\HSTTOOLS.wixobj" />
     <WixObject Include="$(TempDir)\UI_HST.wixobj" />
@@ -83,6 +84,21 @@
           WorkingDirectory="."
           />
     <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\RFIDListener -dversion=$(Version) -o $(TempDir)\ $(TempDir)\RFIDListener.wxs'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+  </Target>
+
+  <Target Name="ProximityListener">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)\windows\listeners\bin\Release"
+                                               Destination="$(TempDir)\ProximityListener"
+                                               Files="GPIIWindowsProximityListener.exe"
+                                               />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\ProximityListener" -dr LISTENERFOLDER -ke -srd -cg ProximityListener -var var.publishDir -gg -out "$(TempDir)\ProximityListener.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\ProximityListener -dversion=$(Version) -o $(TempDir)\ $(TempDir)\ProximityListener.wxs'
           ContinueOnError="false"
           WorkingDirectory="."
           />
