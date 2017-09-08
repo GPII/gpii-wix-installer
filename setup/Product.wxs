@@ -352,11 +352,15 @@
     <CustomAction Id="RunRFIDListener" ExeCommand="[LISTENERFOLDER]\GPII_RFIDListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="RunUSBListener" ExeCommand="[LISTENERFOLDER]\GPII_USBListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="RunProximityListener" ExeCommand="[LISTENERFOLDER]\GPIIWindowsProximityListener.exe" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe gpii-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
 
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
       <Custom Action="RunGPII" After="InstallFinalize">
-          GPII_START_AFTER_INSTALLATION="1"
+        GPII_START_AFTER_INSTALLATION="1"
+      </Custom>
+      <Custom Action="RunTrayIcon" After="InstallFinalize">
+        GPII_START_AFTER_INSTALLATION="1"
       </Custom>
       <Custom Action="RunRFIDListener" After="InstallFinalize">
           RFID_LISTENER_START_AFTER_INSTALLATION="1"
