@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5"
-         DefaultTargets="Clean;GPII;USBListener;RFIDListener;ProximityListener;UCRT;HSTTOOLS;WIX"
+<Project ToolsVersion="4.0"
+         DefaultTargets="Clean;TrayIcon;GPII;USBListener;RFIDListener;ProximityListener;UCRT;HSTTOOLS;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
@@ -39,6 +39,12 @@
   <Target Name="Clean">
     <MSBuild.ExtensionPack.FileSystem.Folder TaskAction="RemoveContent" Path="$(TempDir)"/>
     <Delete Files="@(FilesToDelete)" />
+  </Target>
+
+  <Target Name="TrayIcon">
+    <MakeDir Directories="$(TempDir)\GPII\windows"/>
+    <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\GPII\windows\trayicon.exe" Platform="anycpu"
+         TargetType="winexe" />
   </Target>
 
   <Target Name="GPII">
