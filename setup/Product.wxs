@@ -2,24 +2,24 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <?define ProductName = "GPII" ?>
-  <?define ProductManufacturer = "Raising the Floor" ?>  
+  <?define ProductManufacturer = "Raising the Floor" ?>
   <?define ProductVersion = "$(fun.AutoVersion(1.0))" ?>
   <?define UpgradeCode = "9ece615d-e499-44bc-9233-3d25b52e6bb7" ?>
-  
+
   <?define RegistryKeyPath = "SOFTWARE\$(var.ProductName)" ?>
 
   <Product Id="*"
            Name="$(var.ProductName)"
-           Manufacturer="$(var.ProductManufacturer)"           
+           Manufacturer="$(var.ProductManufacturer)"
            Version="$(var.ProductVersion)"
            UpgradeCode="$(var.UpgradeCode)"
-           Language="1033"           
+           Language="1033"
            >
-    <Package InstallerVersion="405" 
-             Compressed="yes" 
-             InstallScope="perMachine" 
+    <Package InstallerVersion="405"
+             Compressed="yes"
+             InstallScope="perMachine"
              />
-    
+
     <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
     <MediaTemplate EmbedCab="yes" />
 
@@ -63,7 +63,7 @@
     <Feature Id="Listeners" Title="Listeners" AllowAdvertise="no">
       <ComponentRef Id="Dummy" />
       <Feature Id="USBListenerFeature" Title="USB Listener" AllowAdvertise="no">
-        <ComponentGroupRef Id="USBListener" />        
+        <ComponentGroupRef Id="USBListener" />
         <ComponentGroupRef Id="UCRT" />
         <ComponentRef Id="USBListenerShortcuts"/>
         <ComponentRef Id="USBListenerDesktopShortcuts"/>
@@ -152,7 +152,7 @@
                        Type="integer"
                        Value="1"
                        KeyPath="yes"/>
-        <Shortcut Id="RFIDListenerShortcut" 
+        <Shortcut Id="RFIDListenerShortcut"
                   Name="Start RFID Listener"
                   Target="[LISTENERFOLDER]\GPII_RFIDListener.exe"
                   Icon="GPII_RFIDListener.ico"
@@ -171,6 +171,9 @@
                   Target="[LISTENERFOLDER]\GPIIWindowsProximityListener.exe"
                   Icon="GPII_RFIDListener.ico"
                   />
+      </Component>
+      <Component Id="GpiiService">
+        <ServiceControl Id="StartService" Name="gpii-service" Start="install" Stop="both" Remove="uninstall"/>
       </Component>
     </DirectoryRef>
 
@@ -346,6 +349,8 @@
                      KeyPath="yes"
                      />
     </Component>
+
+    <CustomAction Id="RunServiceInstall" ExeCommand="[INSTALLFOLDER]\windows\gpii-service.exe --install" Directory="INSTALLFOLDER" Return="check" />
 
     <!-- We use asyncNoWait in order to not wait for their return codes -->
     <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
