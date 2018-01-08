@@ -63,7 +63,7 @@ namespace TrayIconApplication
                 return;
             }
 
-            string exe = args[0];
+            string exe = args[0].ToLowerInvariant();
             bool show = true;
             bool wait = true;
 
@@ -86,15 +86,33 @@ namespace TrayIconApplication
                 }
             }
 
-            bool found = false;
-            do
+            // Wait for the process to start. The icon needs to be shown in order to configure it.
+            bool running = false;
+            int attempts = 60;
+            while (wait && !running)
             {
-                found = TrayIcon.SetPreference(exe, show);
-                if (wait && !found)
+                running = Process.GetProcesses().Any(p =>
                 {
-                    Thread.Sleep(5000);
+                    try
+                    {
+                        return p.MainModule.FileName.ToLowerInvariant().Contains(exe);
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        return false;
+                    }
+                });
+
+                if (--attempts < 0)
+                {
+                    break;
                 }
-            } while (wait && !found);
+
+                // Sleep even if running, to give the application a chance to show the icon.
+                Thread.Sleep(5000);
+            }
+
+            TrayIcon.SetPreference(exe, show);
         }
 
         /// <summary>
@@ -122,12 +140,13 @@ namespace TrayIconApplication
 
                 INotificationCB callback = new NotificationCallback(item =>
                 {
+                    Console.WriteLine(item.pszExeName + "=" + item.dwUserPref + ": " + item.guidItem.ToString());
                     if (item.pszExeName.IndexOf(exeName, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         NOTIFYITEM_OUT itemOut = new NOTIFYITEM_OUT(item);
                         uint newValue = (bool)alwaysShow ? NOTIFYITEM.AlwaysShow : NOTIFYITEM.Hide;
                         found = true;
-                        if (itemOut.dwUserPref != newValue)
+                        if (true || itemOut.dwUserPref != newValue)
                         {
                             Console.WriteLine("Updating {0}", item.pszExeName);
                             itemOut.dwUserPref = newValue;
