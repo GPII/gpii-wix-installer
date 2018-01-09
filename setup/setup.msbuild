@@ -44,7 +44,7 @@
   <Target Name="TrayIcon">
     <MakeDir Directories="$(TempDir)\GPII\windows"/>
     <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\GPII\windows\trayicon.exe" Platform="anycpu"
-         TargetType="winexe" />
+         TargetType="exe" />
   </Target>
 
   <Target Name="GPII">

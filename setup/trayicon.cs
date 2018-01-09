@@ -33,13 +33,6 @@ namespace TrayIconApplication
     {
         static void Usage()
         {
-            // If compiled as a Windows application, attach to the parent's console if it has one, or create a new one.
-            bool newConsole = !AttachConsole(-1);
-            if (newConsole)
-            {
-                AllocConsole();
-            }
-
             Console.WriteLine("\nShow or hide notification icons for app.exe");
             Console.WriteLine("Usage: {0} app.exe [-nowait] [-show|-hide]", Process.GetCurrentProcess().ProcessName);
             Console.WriteLine("   app.exe  The executable name that provides the icon.");
@@ -47,20 +40,23 @@ namespace TrayIconApplication
             Console.WriteLine("   -hide    Hide the icon.");
             Console.WriteLine("   -nowait  Quit imediately if the icon hasn't been registered,");
             Console.WriteLine("             otherwise keep retrying for 5 minutes.");
-            if (newConsole)
-            {
-                Console.Write("\nPress a key");
-                Console.ReadKey();
-            }
+            Console.Write("\nPress a key");
+            Console.ReadKey();
         }
 
         static void Main(string[] args)
         {
-            Console.WriteLine(IntPtr.Size);
             if (args.Length == 0)
             {
                 Usage();
                 return;
+            }
+
+            // If this process created a new console window, then hide it.
+            bool newConsole = Console.CursorLeft == 0 && Console.CursorTop == 0;
+            if (newConsole)
+            {
+                ShowWindow(GetConsoleWindow(), 0);
             }
 
             string exe = args[0].ToLowerInvariant();
@@ -305,11 +301,10 @@ namespace TrayIconApplication
             }
         }
 
+        [DllImport("user32.dll")]
+        private static extern int ShowWindow(int Handle, int showState);
         [DllImport("kernel32.dll")]
-        static extern bool AllocConsole();
-
-        [DllImport("kernel32.dll")]
-        static extern bool AttachConsole(int dwProcessId);
+        public static extern int GetConsoleWindow();
 
     }
 }
