@@ -146,23 +146,17 @@ namespace TrayIconApplication
                         NOTIFYITEM_OUT itemOut = new NOTIFYITEM_OUT(item);
                         uint newValue = (bool)alwaysShow ? NOTIFYITEM.AlwaysShow : NOTIFYITEM.Hide;
                         found = true;
-                        if (true || itemOut.dwUserPref != newValue)
-                        {
-                            Console.WriteLine("Updating {0}", item.pszExeName);
-                            itemOut.dwUserPref = newValue;
 
-                            if (TrayIcon.UseNew)
-                            {
-                                ((ITrayNotifyNew)trayNotify).SetPreference(itemOut);
-                            }
-                            else
-                            {
-                                ((ITrayNotifyOld)trayNotify).SetPreference(itemOut);
-                            }
+                        Console.WriteLine("Updating {0}", item.pszExeName);
+                        itemOut.dwUserPref = newValue;
+
+                        if (TrayIcon.UseNew)
+                        {
+                            ((ITrayNotifyNew)trayNotify).SetPreference(itemOut);
                         }
                         else
                         {
-                            Console.WriteLine("No need to update {0}", item.pszExeName);
+                            ((ITrayNotifyOld)trayNotify).SetPreference(itemOut);
                         }
                     }
                 });
