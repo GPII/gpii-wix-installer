@@ -161,16 +161,6 @@
       </Component>
     </DirectoryRef>
 
-    <Component Id="Dummy" Directory="LISTENERFOLDER" Guid="{2F28061A-EF7D-4795-8FD4-2B7724212166}">
-      <RegistryValue Root="HKCU"
-                     Key="$(var.RegistryKeyPath)"
-                     Name="ListenerPath"
-                     Type="string"
-                     Value="[LISTENERFOLDER]"
-                     KeyPath="yes"
-                     />
-    </Component>
-
     <CustomAction Id="RunServiceInstall" ExeCommand="[INSTALLFOLDER]\windows\gpii-service.exe --install" Directory="INSTALLFOLDER" Return="check" />
 
     <!-- We use asyncNoWait in order to not wait for their return codes -->
