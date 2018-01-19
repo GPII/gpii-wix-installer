@@ -82,9 +82,7 @@
                   Target="[SystemFolder]msiexec.exe"
                   Arguments="/x [ProductCode]"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-      </Component>
-      <Component Id="GpiiService">
-        <ServiceControl Id="StartService" Name="gpii-service" Start="install" Stop="both" Remove="uninstall"/>
+        <ServiceControl Id="StartService" Name="gpii-service" Start="install" Stop="both" Remove="uninstall" />
       </Component>
     </DirectoryRef>
 
@@ -138,30 +136,7 @@
       </Component>
     </DirectoryRef>
 
-    <DirectoryRef Id="StartupFolder">
-      <Component Id="StartupShortcut" Guid="{1FD6D8C0-3024-44E8-AF1E-46167B836B99}">
-        <Condition>GPII_AUTOSTART="1"</Condition>
-        <RegistryValue Root="HKCU"
-                       Key="$(var.RegistryKeyPath)"
-                       Name="InstallPath"
-                       Type="string"
-                       Value="[INSTALLFOLDER]"
-                       KeyPath="yes"/>
-        <RegistryValue Root="HKCU"
-                       Key="$(var.RegistryKeyPath)"
-                       Name="Version"
-                       Type="string"
-                       Value="$(var.ProductVersion)"/>
-        <Shortcut Id="ExecutableStartupShortcut"
-                  Name="Start $(var.ProductName)"
-                  Target="[INSTALLFOLDER]\start.cmd"
-                  WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
-                  />
-      </Component>
-    </DirectoryRef>
-
-    <CustomAction Id="RunServiceInstall" ExeCommand="[INSTALLFOLDER]\windows\gpii-service.exe --install" Directory="INSTALLFOLDER" Return="check" />
+    <CustomAction Id="RunServiceInstall" ExeCommand="[INSTALLFOLDER]\windows\gpii-service.exe --install" Directory="INSTALLFOLDER" Return="check" Execute="deferred" Impersonate="no" />
 
     <!-- We use asyncNoWait in order to not wait for their return codes -->
     <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
@@ -169,6 +144,9 @@
 
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
+      <Custom Action="RunServiceInstall" Before="StartServices">
+        GPII_AUTOSTART="1"
+      </Custom>
       <Custom Action="RunTrayIcon" After="InstallFinalize">
         GPII_START_AFTER_INSTALLATION="1"
       </Custom>
