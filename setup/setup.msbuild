@@ -41,10 +41,22 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
 
+
+
   <Target Name="TrayIcon">
+    <ItemGroup>
+      <TrayIconCS Include="trayicon.cs;trayicon-uia.cs"/>
+      <COMFileReference Include="trayicon.UIAutomationCore.dll">
+        <EmbedInteropTypes>True</EmbedInteropTypes>
+      </COMFileReference>
+    </ItemGroup>
+
     <MakeDir Directories="$(TempDir)\GPII\windows"/>
-    <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\GPII\windows\trayicon.exe" Platform="anycpu"
-         TargetType="exe" />
+    
+    <Exec Command="&quot;$(registry:HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Microsoft SDKs\Windows\v8.1A\WinSDK-NetFx40Tools@InstallationFolder)\tlbimp.exe&quot; c:\windows\system32\UIAutomationCore.dll /namespace:TrayIconApplication /out:trayicon.UIAutomationCore.dll" />
+
+    <Csc Sources="@(TrayIconCS)"  References="@(COMFileReference)" DebugType="full"
+         OutputAssembly="$(TempDir)\GPII\windows\trayicon.exe" Platform="anycpu" TargetType="exe" />
   </Target>
 
   <Target Name="GPII">
