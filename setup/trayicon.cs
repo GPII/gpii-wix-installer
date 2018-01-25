@@ -77,6 +77,7 @@ namespace TrayIconApplication
                         break;
                     case "-nowait":
                         show = true;
+                        wait = false;
                         break;
                     default:
                         Usage();
@@ -98,6 +99,28 @@ namespace TrayIconApplication
             // Wait for the process to start. The icon needs to be shown in order to configure it.
             bool running = false;
             int attempts = 100;
+            while (wait && !running)
+            {
+                running = Process.GetProcesses().Any(p =>
+                {
+                    try
+                    {
+                        return p.MainModule.FileName.ToLowerInvariant().Contains(exe);
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        return false;
+                    }
+                });
+
+                if (--attempts < 0)
+                {
+                    break;
+                }
+
+                // Sleep even if running, to give the application a chance to show the icon.
+                Thread.Sleep(1000);
+            }
 
             bool? iconState = null;
             do
@@ -114,7 +137,7 @@ namespace TrayIconApplication
                         break;
                     }
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
             } while (iconState == null && --attempts > 0);
 
         }
@@ -156,7 +179,7 @@ namespace TrayIconApplication
             {
                 uint newValue = (bool)alwaysShow ? NOTIFYITEM.AlwaysShow : NOTIFYITEM.Hide;
                 trayNotify = new CTrayNotify();
-                
+
                 callback = new NotificationCallback(item =>
                 {
                     Console.WriteLine(item.pszExeName + "=" + item.dwUserPref);
