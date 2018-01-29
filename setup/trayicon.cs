@@ -28,17 +28,20 @@ namespace TrayIconApplication
     using System.Linq;
     using System.Threading;
     using System.Runtime.InteropServices;
+    using Microsoft.Win32;
+    using System.Collections.Generic;
 
     public class TrayIcon
     {
         static void Usage()
         {
             Console.WriteLine("\nShow or hide notification icons for app.exe");
-            Console.WriteLine("Usage: {0} app.exe [-nowait] [-show|-hide]", Process.GetCurrentProcess().ProcessName);
+            Console.WriteLine("Usage: {0} [-show|-hide] [-nowait] app.exe Icon", Process.GetCurrentProcess().ProcessName);
             Console.WriteLine("   app.exe  The executable name that provides the icon.");
+            Console.WriteLine("   Icon     The icon name.");
             Console.WriteLine("   -show    Keep the icon visible (default).");
             Console.WriteLine("   -hide    Hide the icon.");
-            Console.WriteLine("   -nowait  Quit imediately if the icon hasn't been registered,");
+            Console.WriteLine("   -nowait  Quit immediately if the icon hasn't been registered,");
             Console.WriteLine("             otherwise keep retrying for 5 minutes.");
             Console.Write("\nPress a key");
             Console.ReadKey();
@@ -59,13 +62,12 @@ namespace TrayIconApplication
                 ShowWindow(GetConsoleWindow(), 0);
             }
 
-            string exe = args[0];
             bool show = true;
             bool wait = true;
 
-            foreach (string arg in args.Skip(1))
+            while (args[0][0] == '-')
             {
-                switch (arg.ToLowerInvariant())
+                switch (args[0])
                 {
                     case "-hide":
                         show = false;
@@ -74,23 +76,70 @@ namespace TrayIconApplication
                         show = true;
                         break;
                     case "-nowait":
+                        show = true;
                         wait = false;
                         break;
                     default:
                         Usage();
                         return;
                 }
+
+                args = args.Skip(1).ToArray();
             }
 
-            bool found = false;
+            if (args.Length < 2)
+            {
+                Usage();
+                return;
+            }
+
+            string exe = args[0].ToLowerInvariant();
+            string iconName = string.Join(" ", args.Skip(1).ToArray());
+
+            // Wait for the process to start. The icon needs to be shown in order to configure it.
+            bool running = false;
+            int attempts = 100;
+            while (wait && !running)
+            {
+                running = Process.GetProcesses().Any(p =>
+                {
+                    try
+                    {
+                        return p.MainModule.FileName.ToLowerInvariant().Contains(exe);
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        return false;
+                    }
+                });
+
+                if (--attempts < 0)
+                {
+                    break;
+                }
+
+                // Sleep even if running, to give the application a chance to show the icon.
+                Thread.Sleep(1000);
+            }
+
+            bool? iconState = null;
             do
             {
-                found = TrayIcon.SetPreference(exe, show);
-                if (wait && !found)
+                iconState = TrayIcon.SetPreference(exe, show, true);
+
+                if (iconState == false && IsWindows10)
                 {
-                    Thread.Sleep(5000);
+                    // See if it worked
+                    iconState = TrayIcon.SetPreference(exe, show, false);
+                    if (iconState == false)
+                    {
+                        TrayIconUIA.ToggleTrayIcon(iconName);
+                        break;
+                    }
                 }
-            } while (wait && !found);
+                Thread.Sleep(3000);
+            } while (iconState == null && --attempts > 0);
+
         }
 
         /// <summary>
@@ -102,30 +151,47 @@ namespace TrayIconApplication
             get { return Environment.OSVersion.Version >= new Version(6, 2); }
         }
 
+        private static bool IsWindows10
+        {
+            get
+            {
+                return Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion")
+                    .GetValue("ProductName").ToString().Contains("Windows 10");
+            }
+        }
+
         /// <summary>
         /// Sets the visibility preference of an item.
         /// </summary>
         /// <param name="exeName">The executable name.</param>
         /// <param name="alwaysShow">true to always show the icon.</param>
-        /// <returns>true if an icon by a matching executable was found.</returns>
-        public static bool SetPreference(string exeName, bool alwaysShow)
+        /// <param name="update">true to apply the setting.</param>
+        /// <returns>
+        /// true a matching icon was already in the desired state, false if not, or null if there is no icon.
+        /// </returns>
+        public static bool? SetPreference(string exeName, bool alwaysShow, bool update)
         {
-            bool found = false;
+            bool? result = null;
             CTrayNotify trayNotify = null;
+            INotificationCB callback = null;
+            Thread t = null;
             try
             {
+                uint newValue = (bool)alwaysShow ? NOTIFYITEM.AlwaysShow : NOTIFYITEM.Hide;
                 trayNotify = new CTrayNotify();
 
-                INotificationCB callback = new NotificationCallback(item =>
+                callback = new NotificationCallback(item =>
                 {
+                    Console.WriteLine(item.pszExeName + "=" + item.dwUserPref);
                     if (item.pszExeName.IndexOf(exeName, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         NOTIFYITEM_OUT itemOut = new NOTIFYITEM_OUT(item);
-                        uint newValue = (bool)alwaysShow ? NOTIFYITEM.AlwaysShow : NOTIFYITEM.Hide;
-                        found = true;
-                        if (itemOut.dwUserPref != newValue)
+
+                        bool alreadySet = newValue == item.dwUserPref;
+                        result = alreadySet;
+
+                        if (!alreadySet && update)
                         {
-                            Console.WriteLine("Updating {0}", item.pszExeName);
                             itemOut.dwUserPref = newValue;
 
                             if (TrayIcon.UseNew)
@@ -137,13 +203,8 @@ namespace TrayIconApplication
                                 ((ITrayNotifyOld)trayNotify).SetPreference(itemOut);
                             }
                         }
-                        else
-                        {
-                            Console.WriteLine("No need to update {0}", item.pszExeName);
-                        }
                     }
                 });
-
                 if (TrayIcon.UseNew)
                 {
                     // Windows 8+
@@ -162,12 +223,11 @@ namespace TrayIconApplication
             {
                 if (trayNotify != null)
                 {
-                    Marshal.ReleaseComObject(trayNotify);
-                    trayNotify = null;
+                    //Marshal.ReleaseComObject(trayNotify);
+                    //trayNotify = null;
                 }
             }
-
-            return found;
+            return result;
         }
 
         /// <summary>
@@ -217,6 +277,7 @@ namespace TrayIconApplication
                 this.dwUserPref = notifyItem.dwUserPref;
                 this.uID = notifyItem.uID;
                 this.guidItem = notifyItem.guidItem;
+                //this.guidItem = IntPtr.Zero;
                 this.uID2 = notifyItem.uID2;
             }
         };
