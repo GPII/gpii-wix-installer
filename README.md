@@ -10,7 +10,7 @@
 Make sure MSBuild and the WiX folder are in the path.
 
 ### Staging
-- Build GPII/windows (including the listeners - see https://github.com/GPII/windows/blob/master/provisioning/build.bat)
+- Build GPII/windows
 - Edit line 10 of [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd) and replace `C:\projects\gpii\windows` with the path of your local GPII/windows repository (**no** trailing backslash)
 - Run [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd)
 
@@ -40,11 +40,7 @@ For example, to perform an unattended installation to `C:\GPII`:
 ```
 msiexec /qn /i GPII.msi INSTALLFOLDER=C:\GPII
 ```
-To perform an unattended installation to `C:\GPII` that **does not** include the listeners:
-```
-msiexec /qn /i GPII.msi INSTALLFOLDER=C:\GPII ADDLOCAL=GPIIFeature,VCRedist
-```
-To perform an unattended installation to `C:\GPII` that **does not** include the listeners and creates no desktop shortcuts:
+To perform an unattended installation to `C:\GPII` that creates no desktop shortcuts:
 ```
 msiexec /qn /i GPII.msi INSTALLFOLDER=C:\GPII ADDLOCAL=GPIIFeature,VCRedist DESKTOP_SHORTCUTS=0
 ```
@@ -53,13 +49,11 @@ The list of possible properties include:
 | Name | Value | Description |
 | ---- | ------ | ----------- |
 | INSTALLFOLDER | A folder name<br /><br />**Default:** <code>C:\Program&nbsp;Files\GPII</code> or <code>C:\Program&nbsp;Files&nbsp;(x86)\GPII</code> | The installation folder |
-| ADDLOCAL | Comma (,) separated list<br/></br/>Possible values:<br/><ul><li>`GPIIFeature`</li><li>`VCRedist`</li><li>`USBListenerFeature`</li><li>`RFIDListenerFeature`</li><li>`ALL` **(Default)**</li></ul> | The GPII features that will get installed.<br /><br/>It is advisable to always include `GPIIFeature` (the main GPII platform) and `VCRedist` (the Visual C++ Redistributable Package) and only use this property to control installation (or not) of the listeners. |
+| ADDLOCAL | Comma (,) separated list<br/></br/>Possible values:<br/><ul><li>`GPIIFeature`</li><li>`VCRedist`</li><li>`ALL` **(Default)**</li></ul> | The GPII features that will get installed.<br /><br/>It is advisable to always include `GPIIFeature` (the main GPII platform) and `VCRedist` (the Visual C++ Redistributable Package)|
 | SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create any desktop and start menu shortcuts |
 | DESKTOP_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create any desktop shortcuts |
 | START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create any start menu shortcuts |
 | GPII_SHORTCUTS<br/>GPII_DESKTOP_SHORTCUTS<br/>GPII_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the main GPII platform |
-| USB_LISTENER_SHORTCUTS<br/>USB_LISTENER_DESKTOP_SHORTCUTS<br/>USB_LISTENER_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the USB Listener |
-| RFID_LISTENER_SHORTCUTS<br/>RFID_LISTENER_DESKTOP_SHORTCUTS<br/>RFID_LISTENER_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the RFID Listener |
-| GPII_AUTOSTART<br/>RFID_LISTENER_AUTOSTART<br/>USB_LISTENER_AUTOSTART | `0` **(Default)** or `1` | Whether or not to autostart the respective component on Windows sign in |
+| GPII_AUTOSTART | `0` **(Default)** or `1` | Whether or not to autostart GPII on Windows sign in |
 
 An exhaustive list of other properties can be found at the [Windows Installer Guide](https://msdn.microsoft.com/en-us/library/windows/desktop/aa370905(v=vs.85).aspx).
