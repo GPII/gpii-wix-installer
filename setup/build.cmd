@@ -63,7 +63,6 @@ mkdir ..\staging\windows
 
 rem Copy files to staging\windows
 robocopy "%GPII_INST_WINDOWS%\gpii"         ..\staging\windows\gpii         /job:staging.rcj
-robocopy "%GPII_INST_WINDOWS%\listeners"    ..\staging\windows\listeners    /job:staging.rcj
 robocopy "%GPII_INST_WINDOWS%\node_modules" ..\staging\windows\node_modules /job:staging.rcj
 robocopy "%GPII_INST_WINDOWS%\tests"        ..\staging\windows\tests        /job:staging.rcj
 
@@ -80,7 +79,7 @@ rem Remove development/testing modules
 pushd ..\staging\windows
 	call npm prune --production
 popd
-		
+
 pushd ..\
 	if not exist output\\. mkdir output
 	if not exist temp\\. mkdir temp
