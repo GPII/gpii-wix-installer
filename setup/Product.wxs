@@ -51,6 +51,10 @@
       <ComponentRef Id="System_Information.bat" />
     </Feature>
 
+    <Feature Id="CHROME" Title="Google Chrome Extensions" AllowAdvertise="no">
+      <ComponentRef Id="GoogleChromeExtensions" />
+    </Feature>
+
     <!-- Components -->
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
@@ -159,6 +163,20 @@
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="ChromeExtensions">
+      <Component Id="GoogleChromeExtensions" Guid="{e0294fce-5dd6-4a71-b514-8c5b55006195}">
+        <RegistryKey Root="HKLM"
+                     Key="Software\Policies\Google\Chrome\ExtensionInstallForcelist"
+                     Action="createAndRemoveOnUninstall">
+          <!-- This registry key forces the installation of UIO+ -->
+          <RegistryValue Name="1"
+                         Type="string"
+                         Value="okenndailhmikjjfcnmolpaefecbpaek;https://clients2.google.com/service/update2/crx"
+                         KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+
     <!-- We use asyncNoWait in order to not wait for their return codes -->
     <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe gpii-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
@@ -193,6 +211,7 @@
         <Directory Id="HSTToolsFolder" Name="APCP Hardware Sensitivity Testing Tools" />
       </Directory>
       <Directory Id="StartupFolder" Name="Startup" />
+      <Directory Id="ChromeExtensions" Name="Chrome" />
     </Directory>
   </Fragment>
 </Wix>
