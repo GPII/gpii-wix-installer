@@ -55,6 +55,10 @@
       <ComponentRef Id="GoogleChromeExtensions" />
     </Feature>
 
+   <Feature Id="Themes" Title="High Contrast Themes" AllowAdvertise="no">
+     <ComponentGroupRef Id="Themes"/>
+    </Feature>
+
     <!-- Components -->
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
@@ -212,6 +216,11 @@
       </Directory>
       <Directory Id="StartupFolder" Name="Startup" />
       <Directory Id="ChromeExtensions" Name="Chrome" />
+      <Directory Id="WindowsFolder" Name="WindowsFolder">
+        <Directory Id="ResourcesDirectory" Name="Resources">
+          <Directory Id="ThemesDirectory" Name="Ease of Access Themes" />
+        </Directory>
+      </Directory>
     </Directory>
   </Fragment>
 </Wix>
