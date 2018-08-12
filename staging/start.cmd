@@ -1,4 +1,4 @@
 @echo off
-set GPII_CLOUD_URL=https://flowmanager.prd.gpii.net
+set GPII_CLOUD_URL=http://flowmanager.dev-jhernandez.gpii.net
 cd windows
 start /min gpii-app.exe
