@@ -161,3 +161,6 @@ staging/windows
 output
 temp
 /setup/Setup.sln
+
+# this file contains credentials
+filebeat.msm
