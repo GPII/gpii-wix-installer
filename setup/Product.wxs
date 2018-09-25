@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define ProductName = "GPII" ?>
+  <?define ProductName = "Morphic" ?>
   <?define ProductManufacturer = "Raising the Floor" ?>
   <?define ProductVersion = "$(fun.AutoVersion(1.0))" ?>
   <?define UpgradeCode = "9ece615d-e499-44bc-9233-3d25b52e6bb7" ?>
@@ -70,7 +70,7 @@
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
     </DirectoryRef>
 
-    <Icon Id="GPII.ico" SourceFile="GPII\GPII.ico" />
+    <Icon Id="Morphic.ico" SourceFile="Morphic\Morphic.ico" />
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut">
@@ -90,7 +90,7 @@
                   Name="Start $(var.ProductName)"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="Morphic.ico"
                   />
         <Shortcut Id="UninstallProduct"
                   Name="Uninstall $(var.ProductName)"
@@ -118,7 +118,7 @@
                   Name="Start $(var.ProductName)"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="Morphic.ico"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
@@ -168,7 +168,7 @@
                   Name="Start $(var.ProductName)"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="Morphic.ico"
                   />
       </Component>
     </DirectoryRef>
@@ -189,7 +189,7 @@
 
     <!-- We use asyncNoWait in order to not wait for their return codes -->
     <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
-    <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe gpii-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe morphic-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
 
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
@@ -204,8 +204,8 @@
     <!-- UI Configuration -->
     <UIRef Id="GPII_UI" />
     <WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="GPII\Bitmaps\GPII-banner.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="GPII\Bitmaps\GPII-dialog.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Morphic\Bitmaps\GPII-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Morphic\Bitmaps\GPII-dialog.bmp" />
   </Product>
 
   <!-- Folder structure -->
