@@ -1,3 +1,3 @@
 @echo off
 cd windows
-start /min gpii-app.exe
+start /min morphic-app.exe
