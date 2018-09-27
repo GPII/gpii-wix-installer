@@ -11,7 +11,7 @@
     <TempDir>..\temp</TempDir>
     <OutDir>..\output</OutDir>
     <Version>$([System.DateTime]::Now.ToString(`yyMMdd.HHmmss`))</Version>
-    <MsiFile>GPII.$(Version).msi</MsiFile>
+    <MsiFile>Morphic.$(Version).msi</MsiFile>
   </PropertyGroup>
 
   <!-- The list of WIX input files -->
@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <FilesToDelete Include="$(OutDir)\GPII*.*" />
+    <FilesToDelete Include="$(OutDir)\Morphic*.*" />
   </ItemGroup>
 
   <Target Name="Clean">
@@ -39,22 +39,22 @@
   </Target>
 
   <Target Name="TrayIcon">
-    <MakeDir Directories="$(TempDir)\GPII\windows"/>
-    <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\GPII\windows\trayicon.exe" Platform="anycpu"
+    <MakeDir Directories="$(TempDir)\Morphic\windows"/>
+    <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\Morphic\windows\trayicon.exe" Platform="anycpu"
          TargetType="exe" />
   </Target>
 
   <Target Name="GPII">
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
-                                               Destination="$(TempDir)\GPII"
+                                               Destination="$(TempDir)\Morphic"
                                                Files=""
                                                Options="/S /E"
                                                />
-    <Exec Command='$(WixPath)heat dir "$(TempDir)\GPII" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\Morphic" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
           ContinueOnError="false"
           WorkingDirectory="."
           />
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\GPII -dversion=$(Version) -o $(TempDir)\ $(TempDir)\GPII.wxs'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\Morphic -dversion=$(Version) -o $(TempDir)\ $(TempDir)\GPII.wxs'
           ContinueOnError="false"
           WorkingDirectory="."
           />
