@@ -1,3 +1,3 @@
 @echo off
 cd windows
-start /min gpii-app.exe --reset
+start /min morphic-app.exe --reset

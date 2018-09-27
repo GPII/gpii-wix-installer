@@ -118,7 +118,7 @@
                   Name="Reset $(var.ProductName)"
                   Target="[INSTALLFOLDER]\reset.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="Morphic.ico"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
