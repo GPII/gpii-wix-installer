@@ -12,7 +12,6 @@
     <OutDir>..\output</OutDir>
     <Version>$([System.DateTime]::Now.ToString(`yyMMdd.HHmmss`))</Version>
     <MsiFile>Morphic.$(Version).msi</MsiFile>
-    <MsiFile>GPII.$(Version).msi</MsiFile>
     <GotFilebeat>0</GotFilebeat>
     <GotFilebeat Condition="Exists('../filebeat.msm')">1</GotFilebeat>
   </PropertyGroup>
