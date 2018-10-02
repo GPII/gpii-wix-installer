@@ -12,6 +12,8 @@
     <OutDir>..\output</OutDir>
     <Version>$([System.DateTime]::Now.ToString(`yyMMdd.HHmmss`))</Version>
     <MsiFile>Morphic.$(Version).msi</MsiFile>
+    <GotFilebeat>0</GotFilebeat>
+    <GotFilebeat Condition="Exists('../filebeat.msm')">1</GotFilebeat>
   </PropertyGroup>
 
   <!-- The list of WIX input files -->
@@ -94,7 +96,7 @@
 
   <Target Name="WIX">
     <Message Text="@(WixCode)"/>
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotFilebeat=$(GotFilebeat) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
           ContinueOnError="false"
           WorkingDirectory="."
           />

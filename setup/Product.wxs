@@ -46,6 +46,12 @@
       <MergeRef Id="VCRedist"/>
     </Feature>
 
+    <?if $(var.gotFilebeat)=1 ?>
+      <Feature Id="Filebeat" Title="Filebeat Service" AllowAdvertise="no" Display="hidden" Level="1">
+        <MergeRef Id="Filebeat"/>
+      </Feature>
+    <?endif?>
+
     <Feature Id="HSTTOOLS" Title="APCP Hardware Sensitivity Tests" AllowAdvertise="no">
       <ComponentRef Id="DummyCreateFolderWithPermissions" />
       <ComponentRef Id="System_Information.bat" />
@@ -206,7 +212,13 @@
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+          <?if $(var.gotFilebeat)=1 ?>
+            <Directory Id="Filebeat" Name="filebeat">
+              <Merge Id="Filebeat" SourceFile="..\filebeat.msm" DiskId="1" Language="1033"/>
+            </Directory>
+          <?endif?>
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
