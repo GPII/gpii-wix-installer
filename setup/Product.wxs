@@ -198,6 +198,7 @@
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
       </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
       <Directory Id="StartupFolder" Name="Startup" />
       <Directory Id="ChromeExtensions" Name="Chrome" />
       <Directory Id="WindowsFolder" Name="WindowsFolder">
