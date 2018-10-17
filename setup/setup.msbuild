@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0"
-         DefaultTargets="Clean;TrayIcon;GPII;HSTTOOLS;Themes;WIX"
+         DefaultTargets="Clean;TrayIcon;GPII;Themes;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
@@ -26,7 +26,6 @@
   <ItemGroup>
     <WixObject Include="$(TempDir)\Product.wixobj" />
     <WixObject Include="$(TempDir)\GPII.wixobj" />
-    <WixObject Include="$(TempDir)\HSTTOOLS.wixobj" />
     <WixObject Include="$(TempDir)\Themes.wixobj" />
     <WixObject Include="$(TempDir)\UI_HST.wixobj" />
   </ItemGroup>
@@ -61,21 +60,6 @@
           WorkingDirectory="."
           />
 
-  </Target>
-
-  <Target Name="HSTTOOLS">
-    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)\gpii-hst-tools"
-                                               Destination="$(TempDir)\HSTTOOLS"
-                                               Files=""
-                                               />
-    <Exec Command='$(WixPath)heat dir "$(TempDir)\HSTTOOLS" -dr HSTTOOLSFOLDER "$(TempDir)\HSTTOOLS" -ke -srd -cg HSTTOOLS -var var.publishDir -gg -out "$(TempDir)\HSTTOOLS.wxs"'
-          ContinueOnError="false"
-          WorkingDirectory="."
-          />
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\HSTTOOLS -dversion=$(Version) -o $(TempDir)\ $(TempDir)\HSTTOOLS.wxs'
-          ContinueOnError="false"
-          WorkingDirectory="."
-          />
   </Target>
 
   <Target Name="Themes">
