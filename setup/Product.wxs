@@ -52,11 +52,6 @@
       </Feature>
     <?endif?>
 
-    <Feature Id="HSTTOOLS" Title="APCP Hardware Sensitivity Tests" AllowAdvertise="no">
-      <ComponentRef Id="DummyCreateFolderWithPermissions" />
-      <ComponentRef Id="System_Information.bat" />
-    </Feature>
-
     <Feature Id="CHROME" Title="Google Chrome Extensions" AllowAdvertise="no">
       <ComponentRef Id="GoogleChromeExtensions" />
     </Feature>
@@ -127,32 +122,6 @@
                   Icon="Morphic.ico"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
-      </Component>
-    </DirectoryRef>
-
-    <DirectoryRef Id="HSTToolsFolder">
-      <Component Id="DummyCreateFolderWithPermissions" Guid="{bb24482f-680d-49dc-af86-f0965eb945be}">
-        <CreateFolder>
-          <Permission User="Everyone" GenericAll="yes" />
-        </CreateFolder>
-        <RegistryValue Root="HKCU"
-                       Key="$(var.RegistryKeyPath)"
-                       Name="DesktopFolderWithPermissions"
-                       Type="integer"
-                       Value="1"
-                       KeyPath="yes"
-                       />
-      </Component>
-      <Component Id="System_Information.bat" Guid="{e3f9e4d0-f80e-4684-8ced-f231bf0d5254}" Permanent="yes" >
-          <File Id="System_Information.bat" Source="HSTTOOLS\System_Information.bat" />
-          <RegistryValue Root="HKCU"
-                         Key="$(var.RegistryKeyPath)"
-                         Name="System_Information.bat"
-                         Type="integer"
-                         Value="1"
-                         KeyPath="yes"
-                         />
-          <RemoveFolder Id="HSTToolsFolder" On="uninstall"/>
       </Component>
     </DirectoryRef>
 
@@ -229,9 +198,7 @@
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
       </Directory>
-      <Directory Id="DesktopFolder" Name="Desktop">
-        <Directory Id="HSTToolsFolder" Name="APCP Hardware Sensitivity Testing Tools" />
-      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
       <Directory Id="StartupFolder" Name="Startup" />
       <Directory Id="ChromeExtensions" Name="Chrome" />
       <Directory Id="WindowsFolder" Name="WindowsFolder">
