@@ -86,6 +86,7 @@
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="Morphic.ico"
+                  Show="minimized"
                   />
         <Shortcut Id="UninstallProduct"
                   Name="Uninstall $(var.ProductName)"
@@ -114,12 +115,14 @@
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="Morphic.ico"
+                  Show="minimized"
                   />
         <Shortcut Id="ResetDesktopShortcut"
                   Name="Reset $(var.ProductName)"
                   Target="[INSTALLFOLDER]\reset.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="Morphic.ico"
+                  Show="minimized"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
