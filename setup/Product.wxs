@@ -52,6 +52,11 @@
       </Feature>
     <?endif?>
 
+    <Feature Id="CleanUpFolders" Title="ProgramData folder removal" AllowAdvertise="no">
+      <ComponentRef Id="MorphicFolderCleanup" />
+      <ComponentRef Id="FilebeatFolderCleanup" />
+    </Feature>
+
     <Feature Id="CHROME" Title="Google Chrome Extensions" AllowAdvertise="no">
       <ComponentRef Id="GoogleChromeExtensions" />
     </Feature>
@@ -151,6 +156,20 @@
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="MorphicProgramDataFolder">
+      <Component Id="MorphicFolderCleanup" DiskId="1" Guid="{1FBAD843-8E2E-489D-90F0-703B7241C993}">
+        <RemoveFile Id="CleanupMorphicFolder" Name="*" On="both"/>
+        <RemoveFolder Id="RemoveMorphicFolder" On="both"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="FilebeatProgramDataFolder">
+      <Component Id="FilebeatFolderCleanup" DiskId="1" Guid="{D1D754AA-D014-4508-AD1A-3B7A04B77718}">
+        <RemoveFile Id="CleanupFilebeatFolder" Name="*" On="both"/>
+        <RemoveFolder Id="RemoveFilebeatFolder" On="both"/>
+      </Component>
+    </DirectoryRef>
+
     <DirectoryRef Id="ChromeExtensions">
       <Component Id="GoogleChromeExtensions" Guid="{e0294fce-5dd6-4a71-b514-8c5b55006195}">
         <RegistryKey Root="HKLM"
@@ -203,6 +222,11 @@
       </Directory>
       <Directory Id="DesktopFolder" Name="Desktop" />
       <Directory Id="StartupFolder" Name="Startup" />
+      <Directory Id="CommonAppDataFolder" Name="ProgramData">
+        <Directory Id="MorphicProgramDataFolder" Name="$(var.ProductName)">
+          <Directory Id="FilebeatProgramDataFolder" Name="Filebeat" />
+        </Directory>
+      </Directory>
       <Directory Id="ChromeExtensions" Name="Chrome" />
       <Directory Id="WindowsFolder" Name="WindowsFolder">
         <Directory Id="ResourcesDirectory" Name="Resources">
