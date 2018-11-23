@@ -187,9 +187,11 @@
     <!-- We use asyncNoWait in order to not wait for their return codes -->
     <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe morphic-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="KillApp" Directory="INSTALLFOLDER" Return="ignore" ExeCommand="&quot;[SystemFolder]taskkill.exe&quot; /F /IM &quot;morphic-app.exe&quot;" />
 
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
+      <Custom Action="KillApp" Before="InstallValidate" />
       <Custom Action="RunGPII" After="InstallFinalize">
         GPII_START_AFTER_INSTALLATION="1"
       </Custom>
