@@ -87,7 +87,7 @@
                        Type="string"
                        Value="$(var.ProductVersion)"/>
         <Shortcut Id="ExecutableShortcut"
-                  Name="Open $(var.ProductName) QuickStrip"
+                  Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="Morphic.ico"
@@ -116,7 +116,7 @@
                        Type="string"
                        Value="$(var.ProductVersion)"/>
         <Shortcut Id="ExecutableDesktopShortcut"
-                  Name="Open $(var.ProductName) QuickStrip"
+                  Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="Morphic.ico"
@@ -148,10 +148,11 @@
                        Type="string"
                        Value="$(var.ProductVersion)"/>
         <Shortcut Id="ExecutableStartupShortcut"
-                  Name="Open $(var.ProductName) QuickStrip"
+                  Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="Morphic.ico"
+                  Show="minimized"
                   />
       </Component>
     </DirectoryRef>
