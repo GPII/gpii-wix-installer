@@ -71,6 +71,8 @@
     </DirectoryRef>
 
     <Icon Id="Morphic.ico" SourceFile="Morphic\Morphic.ico" />
+    <Icon Id="MorphicDesktop.ico" SourceFile="Morphic\MorphicDesktop.ico" />
+    <Icon Id="MorphicReset.ico" SourceFile="Morphic\MorphicReset.ico" />
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut">
@@ -119,14 +121,14 @@
                   Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="Morphic.ico"
+                  Icon="MorphicDesktop.ico"
                   Show="minimized"
                   />
         <Shortcut Id="ResetDesktopShortcut"
                   Name="Reset $(var.ProductName)"
                   Target="[INSTALLFOLDER]\reset.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="Morphic.ico"
+                  Icon="MorphicReset.ico"
                   Show="minimized"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
