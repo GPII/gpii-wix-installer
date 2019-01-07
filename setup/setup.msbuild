@@ -14,6 +14,7 @@
     <MsiFile>Morphic.$(Version).msi</MsiFile>
     <GotFilebeat>0</GotFilebeat>
     <GotFilebeat Condition="Exists('../filebeat.msm')">1</GotFilebeat>
+    <Compression Condition="'$(Compression)' == ''">9</Compression>
   </PropertyGroup>
 
   <!-- The list of WIX input files -->
@@ -46,12 +47,16 @@
   </Target>
 
   <Target Name="GPII">
+    <Exec Command='7zr a -mx$(Compression) -bt -sdel -r "$(TempDir)\Morphic\windows\resources.7z" "$(SourceDir)\windows\resources" "morphic-app.exe" "node.dll"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
                                                Destination="$(TempDir)\Morphic"
                                                Files=""
                                                Options="/S /E"
                                                />
-    <Exec Command='$(WixPath)heat dir "$(TempDir)\Morphic" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\Morphic" -dr INSTALLFOLDER -ke -srd -sreg -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
           ContinueOnError="false"
           WorkingDirectory="."
           />

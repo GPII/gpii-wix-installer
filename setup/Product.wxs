@@ -192,9 +192,17 @@
     <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe morphic-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
     <CustomAction Id="KillApp" Directory="INSTALLFOLDER" Return="ignore" ExeCommand="&quot;[SystemFolder]taskkill.exe&quot; /F /IM &quot;morphic-app.exe&quot;" />
 
+    <CustomAction Id="ExtractGPII"
+                  BinaryKey="SevenZip"
+                  ExeCommand='x -aoa -y -o"[INSTALLFOLDER]\windows" "[INSTALLFOLDER]\windows\resources.7z"'
+                  Impersonate="no" Execute="deferred" Return="check"  />
+
+    <Binary Id="SevenZip" SourceFile="./7zr.exe" />
+    
     <!-- Install execute sequence of custom actions -->
     <InstallExecuteSequence>
       <Custom Action="KillApp" Before="InstallValidate" />
+      <Custom Action="ExtractGPII" Before="InstallFinalize">NOT Installed OR REINSTALL</Custom>
       <Custom Action="RunGPII" After="InstallFinalize">
         GPII_START_AFTER_INSTALLATION="1"
       </Custom>
