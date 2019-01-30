@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0"
-         DefaultTargets="Clean;TrayIcon;GPII;Themes;WIX"
+         DefaultTargets="Clean;GPII;Themes;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
@@ -37,12 +37,6 @@
   <Target Name="Clean">
     <MSBuild.ExtensionPack.FileSystem.Folder TaskAction="RemoveContent" Path="$(TempDir)"/>
     <Delete Files="@(FilesToDelete)" />
-  </Target>
-
-  <Target Name="TrayIcon">
-    <MakeDir Directories="$(TempDir)\Morphic\windows"/>
-    <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\Morphic\windows\trayicon.exe" Platform="anycpu"
-         TargetType="exe" />
   </Target>
 
   <Target Name="GPII">
