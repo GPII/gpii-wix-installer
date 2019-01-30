@@ -48,8 +48,8 @@
   <Target Name="GPII">
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
                                                Destination="$(TempDir)\Morphic"
-                                               Files=""
-                                               Options="/S /E"
+                                               Files="" 
+                                               Options="/S /E /XF morphic-service.exe"
                                                />
     <Exec Command='$(WixPath)heat dir "$(TempDir)\Morphic" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
           ContinueOnError="false"
