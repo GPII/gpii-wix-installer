@@ -179,6 +179,15 @@
       </Component>
     </DirectoryRef>
 
+    <CustomAction Id="Firewall"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand='netsh advfirewall firewall add rule name="morphic" profile=any protocol=any enable=yes DIR=In program="[INSTALLFOLDER]windows\morphic-app.exe" Action=Allow'
+                  Impersonate="no" Execute="deferred" Return="check"  />
+
+    <InstallExecuteSequence>
+      <Custom Action="Firewall" Before="InstallServices" />
+    </InstallExecuteSequence>
+
     <!-- UI Configuration -->
     <UIRef Id="GPII_UI" />
     <WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
