@@ -180,12 +180,18 @@
     </DirectoryRef>
 
     <CustomAction Id="Firewall"
-                  Directory="INSTALLFOLDER"
+                  Directory="ProgramFilesFolder"
                   ExeCommand='netsh advfirewall firewall add rule name="morphic" profile=any protocol=any enable=yes DIR=In program="[INSTALLFOLDER]windows\morphic-app.exe" Action=Allow'
                   Impersonate="no" Execute="deferred" Return="check"  />
 
+    <CustomAction Id="FirewallRemove"
+                  Directory="ProgramFilesFolder"
+                  ExeCommand='netsh advfirewall firewall del rule name="morphic"'
+                  Impersonate="no" Execute="deferred" Return="asyncWait"  />
+
     <InstallExecuteSequence>
-      <Custom Action="Firewall" Before="InstallServices" />
+      <Custom Action="FirewallRemove" Before="InstallServices">REMOVE</Custom>
+      <Custom Action="Firewall" Before="InstallServices">NOT Installed</Custom>
     </InstallExecuteSequence>
 
     <!-- UI Configuration -->
