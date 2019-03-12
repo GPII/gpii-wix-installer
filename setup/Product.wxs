@@ -212,6 +212,11 @@
               <Merge Id="Filebeat" SourceFile="..\filebeat.msm" DiskId="1" Language="1033"/>
             </Directory>
           <?endif?>
+          <?if $(var.gotSharex)=1 ?>
+            <Directory Id="ShareX" Name="sharex">
+              <Merge Id="ShareX" SourceFile="..\sharex.msm" DiskId="1" Language="1033"/>
+            </Directory>
+          <?endif?>
         </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">

@@ -14,6 +14,8 @@
     <MsiFile>Morphic.$(Version).msi</MsiFile>
     <GotFilebeat>0</GotFilebeat>
     <GotFilebeat Condition="Exists('../filebeat.msm')">1</GotFilebeat>
+    <GotSharex>0</GotSharex>
+    <GotSharex Condition="Exists('../sharex.msm')">1</GotSharex>
   </PropertyGroup>
 
   <!-- The list of WIX input files -->
@@ -48,7 +50,7 @@
   <Target Name="GPII">
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
                                                Destination="$(TempDir)\Morphic"
-                                               Files="" 
+                                               Files=""
                                                Options="/S /E /XF morphic-service.exe"
                                                />
     <Exec Command='$(WixPath)heat dir "$(TempDir)\Morphic" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
@@ -80,7 +82,7 @@
 
   <Target Name="WIX">
     <Message Text="@(WixCode)"/>
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotFilebeat=$(GotFilebeat) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotFilebeat=$(GotFilebeat) -dgotSharex=$(GotSharex) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
           ContinueOnError="false"
           WorkingDirectory="."
           />
