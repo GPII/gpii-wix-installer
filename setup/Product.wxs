@@ -52,6 +52,12 @@
       </Feature>
     <?endif?>
 
+    <?if $(var.gotSharex)=1 ?>
+      <Feature Id="ShareX" Title="ShareX Portable" AllowAdvertise="no" Display="hidden" Level="1">
+        <MergeRef Id="ShareX"/>
+      </Feature>
+    <?endif?>
+
     <Feature Id="CleanUpFolders" Title="ProgramData folder removal" AllowAdvertise="no">
       <ComponentRef Id="MorphicFolderCleanup" />
       <ComponentRef Id="FilebeatFolderCleanup" />
