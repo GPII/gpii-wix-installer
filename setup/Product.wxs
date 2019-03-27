@@ -46,6 +46,10 @@
       <MergeRef Id="VCRedist"/>
     </Feature>
 
+    <Feature Id="VCRedist2010" Title="Visual C++ Runtime 2010" AllowAdvertise="no" Display="hidden" Level="1">
+      <MergeRef Id="VCRedist2010"/>
+    </Feature>
+
     <?if $(var.gotFilebeat)=1 ?>
       <Feature Id="Filebeat" Title="Filebeat Service" AllowAdvertise="no" Display="hidden" Level="1">
         <MergeRef Id="Filebeat"/>
@@ -74,6 +78,7 @@
     <!-- Components -->
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
+      <Merge Id="VCRedist2010" SourceFile="Merge Modules\Microsoft_VC100_CRT_x64.msm" DiskId="1" Language="0"/>
     </DirectoryRef>
 
     <Icon Id="Morphic.ico" SourceFile="Morphic\Morphic.ico" />
