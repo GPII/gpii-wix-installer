@@ -167,7 +167,7 @@
     <DirectoryRef Id="MorphicWindowsDir" >
       <Component Id="MorphicService" Guid="{43F9EB9C-40B8-4F28-B20E-83704DA2A6DB}">
         <File Id="ServiceExe" Source="..\staging\windows\morphic-service.exe" KeyPath="yes"/>
-        <ServiceControl Id="StartService" Name="morphic-service" Start="install" Stop="both" Remove="uninstall" />
+        <ServiceControl Id="StartService" Name="morphic-service" Start="install" Stop="both" Remove="uninstall" Wait="yes" />
         <ServiceInstall Id="MorphicServiceInstall"
                                   Name="morphic-service"
                                   DisplayName="Morphic Service"
@@ -189,7 +189,13 @@
                   ExeCommand='netsh advfirewall firewall del rule name="morphic"'
                   Impersonate="no" Execute="deferred" Return="asyncWait"  />
 
+    <CustomAction Id="ShutdownMorphic"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand='[INSTALLFOLDER]\windows\morphic-app.exe --shutdown'
+                  Return="asyncWait"  />
+
     <InstallExecuteSequence>
+      <Custom Action="ShutdownMorphic" Before="InstallValidate">Installed</Custom>
       <Custom Action="FirewallRemove" Before="InstallServices">REMOVE</Custom>
       <Custom Action="Firewall" Before="InstallServices">NOT Installed</Custom>
     </InstallExecuteSequence>
