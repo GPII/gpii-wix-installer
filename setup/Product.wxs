@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     >
 
   <?define ProductName = "Morphic" ?>
   <?define ProductManufacturer = "Raising the Floor" ?>
@@ -175,7 +177,15 @@
                                   ErrorControl="normal"
                                   Start="auto"
                                   Type="ownProcess"
-                                  Arguments="--service --loglevel=DEBUG" />
+                                  Arguments="--service --loglevel=DEBUG">
+          <util:ServiceConfig FirstFailureActionType="restart"
+                              SecondFailureActionType="restart"
+                              ThirdFailureActionType="restart"
+                              RestartServiceDelayInSeconds="15"
+                              ResetPeriodInDays="1"
+                              />
+        </ServiceInstall>
+
       </Component>
     </DirectoryRef>
 
