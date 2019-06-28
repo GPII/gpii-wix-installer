@@ -82,7 +82,7 @@
 
   <Target Name="WIX">
     <Message Text="@(WixCode)"/>
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotSharex=$(GotSharex) -dgotFilebeat=$(GotFilebeat) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotDocuMorph=$(GotDocuMorph) -dgotFilebeat=$(GotFilebeat) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
           ContinueOnError="false"
           WorkingDirectory="."
           />

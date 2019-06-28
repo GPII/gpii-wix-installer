@@ -221,7 +221,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
-          <?if $(var.gotSharex)=1 ?>
+          <?if $(var.gotDocuMorph)=1 ?>
             <Directory Id="DocuMorph" Name="documorph">
               <Merge Id="DocuMorph" SourceFile="..\documorph.msm" DiskId="1" Language="1033"/>
             </Directory>
