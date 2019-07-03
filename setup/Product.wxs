@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-  xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
-     >
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <?define ProductName = "Morphic" ?>
   <?define ProductManufacturer = "Raising the Floor" ?>
@@ -178,17 +176,11 @@
                                   Start="auto"
                                   Type="ownProcess"
                                   Arguments="--service --loglevel=DEBUG">
-          <util:ServiceConfig FirstFailureActionType="restart"
-                              SecondFailureActionType="restart"
-                              ThirdFailureActionType="restart"
-                              RestartServiceDelayInSeconds="15"
-                              ResetPeriodInDays="1"
-                              />
         </ServiceInstall>
 
         <!-- Prevent language packs from being automatically removed -->
         <RegistryKey Root="HKLM" Key="Software\Policies\Microsoft\Control Panel\International">
-            <RegistryValue Type="integer" Name="BlockCleanupOfUnusedPreinstalledLangPacks" Value="1" KeyPath="yes"/>
+            <RegistryValue Type="integer" Name="BlockCleanupOfUnusedPreinstalledLangPacks" Value="1" />
         </RegistryKey>
 
       </Component>
@@ -212,15 +204,31 @@
     <!-- Prevent the language packs from being automatically removed -->
     <CustomAction Id="DisableLPRemove"
                   ExeCommand ='schtasks /Change /TN "Microsoft\Windows\MUI\LPRemove" /Disable'
-                  Directory="SystemFolder"
+                  Directory="ProgramFilesFolder"
                   Execute="deferred"
                   Impersonate="no" Return="asyncWait" />
 
-    <InstallExecuteSequence>
+    <!-- Make the service restart if it dies -->
+    <CustomAction Id="MorphicServiceRestart"
+                  ExeCommand ='cmd.exe /c "sc.exe failure morphic-service reset= 100 actions= restart/10000/restart/20000/restart/60000"'
+                  Directory="ProgramFilesFolder"
+                  Execute="deferred"
+                  Impersonate="no" Return="asyncWait" />
+    <!-- Make the filebeat service restart if it dies -->
+    <CustomAction Id="FilebeatServiceRestart"
+                  ExeCommand ='cmd.exe /c "sc.exe failure morphic-filebeat reset= 100 actions= restart/10000/restart/20000/restart/60000"'
+                  Directory="ProgramFilesFolder"
+                  Execute="deferred"
+                  Impersonate="no" Return="asyncWait" />
+
+
+      <InstallExecuteSequence>
       <Custom Action="ShutdownMorphic" Before="InstallValidate">Installed</Custom>
       <Custom Action="FirewallRemove" Before="InstallServices">REMOVE</Custom>
       <Custom Action="Firewall" Before="InstallServices">NOT Installed</Custom>
       <Custom Action="DisableLPRemove" After="InstallInitialize" >NOT REMOVE</Custom>
+      <Custom Action="MorphicServiceRestart" After="InstallInitialize" >NOT REMOVE</Custom>
+      <Custom Action="FilebeatServiceRestart" After="InstallInitialize" >NOT REMOVE</Custom>
     </InstallExecuteSequence>
 
     <!-- UI Configuration -->
