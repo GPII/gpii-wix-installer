@@ -134,7 +134,7 @@
                   Show="minimized"
                   />
         <Shortcut Id="ResetDesktopShortcut"
-                  Name="Reset $(var.ProductName)"
+                  Name="Reset to Standard"
                   Target="[INSTALLFOLDER]\reset.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="MorphicReset.ico"
