@@ -164,3 +164,4 @@ temp
 
 # this file contains credentials
 filebeat.msm
+sharex.msm
