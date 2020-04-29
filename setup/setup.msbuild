@@ -1,34 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5"
-         DefaultTargets="Clean;GPII;WIX"
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0"
+         DefaultTargets="Clean;TrayIcon;GPII;Themes;WIX"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
          >
 
-  <Import Project="C:\Program Files (x86)\MSBuild\ExtensionPack\4.0\MSBuild.ExtensionPack.tasks"/>
+  <Import Project="C:\Program Files (x86)\MSBuildExtensionPack\4.0\MSBuild.ExtensionPack.tasks"/>
 
   <PropertyGroup>
     <SourceDir>..\staging</SourceDir>
     <TempDir>..\temp</TempDir>
     <OutDir>..\output</OutDir>
     <Version>$([System.DateTime]::Now.ToString(`yyMMdd.HHmmss`))</Version>
-    <MsiFile>GPII.$(Version).msi</MsiFile>
+    <MsiFile>Morphic.$(Version).msi</MsiFile>
+    <GotFilebeat>0</GotFilebeat>
+    <GotFilebeat Condition="Exists('../filebeat.msm')">1</GotFilebeat>
   </PropertyGroup>
 
   <!-- The list of WIX input files -->
   <ItemGroup>
     <WixCode Include="Product.wxs" />
-    <WixCode Include="UI.wxs" />
+    <WixCode Include="UI_HST.wxs" />
   </ItemGroup>
 
   <!-- The list of WIX after candle files -->
   <ItemGroup>
     <WixObject Include="$(TempDir)\Product.wixobj" />
     <WixObject Include="$(TempDir)\GPII.wixobj" />
-    <WixObject Include="$(TempDir)\UI.wixobj" />
+    <WixObject Include="$(TempDir)\Themes.wixobj" />
+    <WixObject Include="$(TempDir)\UI_HST.wixobj" />
   </ItemGroup>
 
   <ItemGroup>
-    <FilesToDelete Include="$(OutDir)\GPII*.*" />
+    <FilesToDelete Include="$(OutDir)\Morphic*.*" />
   </ItemGroup>
 
   <Target Name="Clean">
@@ -36,17 +39,39 @@
     <Delete Files="@(FilesToDelete)" />
   </Target>
 
+  <Target Name="TrayIcon">
+    <MakeDir Directories="$(TempDir)\Morphic\windows"/>
+    <Csc Sources="trayicon.cs" OutputAssembly="$(TempDir)\Morphic\windows\trayicon.exe" Platform="anycpu"
+         TargetType="exe" />
+  </Target>
+
   <Target Name="GPII">
     <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)"
-                                               Destination="$(TempDir)\GPII"
+                                               Destination="$(TempDir)\Morphic"
                                                Files=""
                                                Options="/S /E"
                                                />
-    <Exec Command='$(WixPath)heat dir "$(TempDir)\GPII" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\Morphic" -dr INSTALLFOLDER -ke -srd -cg GPII -var var.publishDir -gg -out "$(TempDir)\GPII.wxs"'
           ContinueOnError="false"
           WorkingDirectory="."
           />
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\GPII -dversion=$(Version) -o $(TempDir)\ $(TempDir)\GPII.wxs'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\Morphic -dversion=$(Version) -o $(TempDir)\ $(TempDir)\GPII.wxs'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+
+  </Target>
+
+  <Target Name="Themes">
+    <MSBuild.ExtensionPack.FileSystem.RoboCopy Source="$(SourceDir)\..\Themes"
+                                               Destination="$(TempDir)\Themes"
+                                               Files="/S"
+                                               />
+    <Exec Command='$(WixPath)heat dir "$(TempDir)\Themes" -dr ThemesDirectory -ke -srd -cg Themes -var var.publishDir -gg -out "$(TempDir)\Themes.wxs"'
+          ContinueOnError="false"
+          WorkingDirectory="."
+          />
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir)\Themes -dversion=$(Version) -o $(TempDir)\ $(TempDir)\Themes.wxs'
           ContinueOnError="false"
           WorkingDirectory="."
           />
@@ -55,7 +80,7 @@
 
   <Target Name="WIX">
     <Message Text="@(WixCode)"/>
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotFilebeat=$(GotFilebeat) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
           ContinueOnError="false"
           WorkingDirectory="."
           />

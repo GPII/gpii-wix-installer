@@ -22,7 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
-    <Compile Include="UI.wxs" />
+    <Compile Include="UI_HST.wxs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="build.cmd" />

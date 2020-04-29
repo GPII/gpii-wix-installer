@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define ProductName = "GPII" ?>
+  <?define ProductName = "Morphic" ?>
   <?define ProductManufacturer = "Raising the Floor" ?>
   <?define ProductVersion = "$(fun.AutoVersion(1.0))" ?>
   <?define UpgradeCode = "9ece615d-e499-44bc-9233-3d25b52e6bb7" ?>
@@ -31,7 +31,8 @@
     <Property Admin="yes" Id="GPII_SHORTCUTS" Value="1" />
     <Property Admin="yes" Id="GPII_DESKTOP_SHORTCUTS" Value="1" />
     <Property Admin="yes" Id="GPII_START_MENU_SHORTCUTS" Value="1" />
-    <Property Admin="yes" Id="GPII_AUTOSTART" Value="0" />
+    <Property Admin="yes" Id="GPII_AUTOSTART" Value="1" />
+    <Property Admin="yes" Id="GPII_START_AFTER_INSTALLATION" Value="1" />
 
     <!-- Features -->
     <Feature Id="GPIIFeature" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLFOLDER" AllowAdvertise="no" Absent="disallow">
@@ -45,12 +46,33 @@
       <MergeRef Id="VCRedist"/>
     </Feature>
 
+    <?if $(var.gotFilebeat)=1 ?>
+      <Feature Id="Filebeat" Title="Filebeat Service" AllowAdvertise="no" Display="hidden" Level="1">
+        <MergeRef Id="Filebeat"/>
+      </Feature>
+    <?endif?>
+
+    <Feature Id="CleanUpFolders" Title="ProgramData folder removal" AllowAdvertise="no">
+      <ComponentRef Id="MorphicFolderCleanup" />
+      <ComponentRef Id="FilebeatFolderCleanup" />
+    </Feature>
+
+    <Feature Id="CHROME" Title="Google Chrome Extensions" AllowAdvertise="no">
+      <ComponentRef Id="GoogleChromeExtensions" />
+    </Feature>
+
+   <Feature Id="Themes" Title="High Contrast Themes" AllowAdvertise="no">
+     <ComponentGroupRef Id="Themes"/>
+    </Feature>
+
     <!-- Components -->
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="VCRedist" SourceFile="Merge Modules\Microsoft_VC140_CRT_x86.msm" DiskId="1" Language="0"/>
     </DirectoryRef>
 
-    <Icon Id="GPII.ico" SourceFile="GPII\GPII.ico" />
+    <Icon Id="Morphic.ico" SourceFile="Morphic\Morphic.ico" />
+    <Icon Id="MorphicDesktop.ico" SourceFile="Morphic\MorphicDesktop.ico" />
+    <Icon Id="MorphicReset.ico" SourceFile="Morphic\MorphicReset.ico" />
 
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut">
@@ -67,10 +89,11 @@
                        Type="string"
                        Value="$(var.ProductVersion)"/>
         <Shortcut Id="ExecutableShortcut"
-                  Name="Start $(var.ProductName)"
+                  Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="Morphic.ico"
+                  Show="minimized"
                   />
         <Shortcut Id="UninstallProduct"
                   Name="Uninstall $(var.ProductName)"
@@ -95,10 +118,18 @@
                        Type="string"
                        Value="$(var.ProductVersion)"/>
         <Shortcut Id="ExecutableDesktopShortcut"
-                  Name="Start $(var.ProductName)"
+                  Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="MorphicDesktop.ico"
+                  Show="minimized"
+                  />
+        <Shortcut Id="ResetDesktopShortcut"
+                  Name="Reset $(var.ProductName)"
+                  Target="[INSTALLFOLDER]\reset.cmd"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="MorphicReset.ico"
+                  Show="minimized"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
       </Component>
@@ -119,32 +150,94 @@
                        Type="string"
                        Value="$(var.ProductVersion)"/>
         <Shortcut Id="ExecutableStartupShortcut"
-                  Name="Start $(var.ProductName)"
+                  Name="$(var.ProductName) QuickStrip"
                   Target="[INSTALLFOLDER]\start.cmd"
                   WorkingDirectory="INSTALLFOLDER"
-                  Icon="GPII.ico"
+                  Icon="Morphic.ico"
+                  Show="minimized"
                   />
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="MorphicProgramDataFolder">
+      <Component Id="MorphicFolderCleanup" DiskId="1" Guid="{1FBAD843-8E2E-489D-90F0-703B7241C993}">
+        <RemoveFile Id="CleanupMorphicFolder" Name="*" On="both"/>
+        <RemoveFolder Id="RemoveMorphicFolder" On="both"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="FilebeatProgramDataFolder">
+      <Component Id="FilebeatFolderCleanup" DiskId="1" Guid="{D1D754AA-D014-4508-AD1A-3B7A04B77718}">
+        <RemoveFile Id="CleanupFilebeatFolder" Name="*" On="both"/>
+        <RemoveFolder Id="RemoveFilebeatFolder" On="both"/>
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="ChromeExtensions">
+      <Component Id="GoogleChromeExtensions" Guid="{e0294fce-5dd6-4a71-b514-8c5b55006195}">
+        <RegistryKey Root="HKLM"
+                     Key="Software\Policies\Google\Chrome\ExtensionInstallForcelist"
+                     Action="createAndRemoveOnUninstall">
+          <!-- This registry key forces the installation of UIO+ -->
+          <RegistryValue Name="1"
+                         Type="string"
+                         Value="okenndailhmikjjfcnmolpaefecbpaek;https://clients2.google.com/service/update2/crx"
+                         KeyPath="yes"/>
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+
+    <!-- We use asyncNoWait in order to not wait for their return codes -->
+    <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe morphic-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
+    <CustomAction Id="KillApp" Directory="INSTALLFOLDER" Return="ignore" ExeCommand="&quot;[SystemFolder]taskkill.exe&quot; /F /IM &quot;morphic-app.exe&quot;" />
+
+    <!-- Install execute sequence of custom actions -->
+    <InstallExecuteSequence>
+      <Custom Action="KillApp" Before="InstallValidate" />
+      <Custom Action="RunGPII" After="InstallFinalize">
+        GPII_START_AFTER_INSTALLATION="1"
+      </Custom>
+      <Custom Action="RunTrayIcon" After="InstallFinalize">
+        GPII_START_AFTER_INSTALLATION="1"
+      </Custom>
+    </InstallExecuteSequence>
+
     <!-- UI Configuration -->
     <UIRef Id="GPII_UI" />
     <WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="GPII\Bitmaps\GPII-banner.bmp" />
-    <WixVariable Id="WixUIDialogBmp" Value="GPII\Bitmaps\GPII-dialog.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Morphic\Bitmaps\GPII-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Morphic\Bitmaps\GPII-dialog.bmp" />
   </Product>
 
   <!-- Folder structure -->
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+          <?if $(var.gotFilebeat)=1 ?>
+            <Directory Id="Filebeat" Name="filebeat">
+              <Merge Id="Filebeat" SourceFile="..\filebeat.msm" DiskId="1" Language="1033"/>
+            </Directory>
+          <?endif?>
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
       </Directory>
       <Directory Id="DesktopFolder" Name="Desktop" />
       <Directory Id="StartupFolder" Name="Startup" />
+      <Directory Id="CommonAppDataFolder" Name="ProgramData">
+        <Directory Id="MorphicProgramDataFolder" Name="$(var.ProductName)">
+          <Directory Id="FilebeatProgramDataFolder" Name="Filebeat" />
+        </Directory>
+      </Directory>
+      <Directory Id="ChromeExtensions" Name="Chrome" />
+      <Directory Id="WindowsFolder" Name="WindowsFolder">
+        <Directory Id="ResourcesDirectory" Name="Resources">
+          <Directory Id="ThemesDirectory" Name="Ease of Access Themes" />
+        </Directory>
+      </Directory>
     </Directory>
   </Fragment>
 </Wix>
