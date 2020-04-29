@@ -2,7 +2,7 @@
 
 [Theme]
 ; High Contrast White - IDS_THEME_DISPLAYNAME_HCWHITE
-DisplayName=Yellow on Black
+DisplayName=Black on Yellow
 ThemeId={CEE5AC41-6C74-4963-B6AA-D4061201684E}
 
 ; Computer - SHIDI_SERVER

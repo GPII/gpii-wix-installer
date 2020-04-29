@@ -39,16 +39,28 @@
       <ComponentGroupRef Id="GPII" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="DesktopShortcut" />
-      <ComponentRef Id="StartupShortcut" />
+      <ComponentRef Id="MorphicService" />
     </Feature>
 
     <Feature Id="VCRedist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="VCRedist"/>
     </Feature>
 
+    <?if $(var.gotDocuMorph)=1 ?>
+      <Feature Id="DocuMorph" Title="DocuMorph Widget" AllowAdvertise="no" Display="hidden" Level="1">
+        <MergeRef Id="DocuMorph"/>
+      </Feature>
+    <?endif?>
+
     <?if $(var.gotFilebeat)=1 ?>
       <Feature Id="Filebeat" Title="Filebeat Service" AllowAdvertise="no" Display="hidden" Level="1">
         <MergeRef Id="Filebeat"/>
+      </Feature>
+    <?endif?>
+
+    <?if $(var.gotSharex)=1 ?>
+      <Feature Id="ShareX" Title="ShareX Portable" AllowAdvertise="no" Display="hidden" Level="1">
+        <MergeRef Id="ShareX"/>
       </Feature>
     <?endif?>
 
@@ -100,6 +112,7 @@
                   Target="[SystemFolder]msiexec.exe"
                   Arguments="/x [ProductCode]"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+
       </Component>
     </DirectoryRef>
 
@@ -125,37 +138,13 @@
                   Show="minimized"
                   />
         <Shortcut Id="ResetDesktopShortcut"
-                  Name="Reset $(var.ProductName)"
+                  Name="Reset to Standard"
                   Target="[INSTALLFOLDER]\reset.cmd"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="MorphicReset.ico"
                   Show="minimized"
                   />
         <RemoveFolder Id="DesktopFolder" On="uninstall"/>
-      </Component>
-    </DirectoryRef>
-
-    <DirectoryRef Id="StartupFolder">
-      <Component Id="StartupShortcut" Guid="{1FD6D8C0-3024-44E8-AF1E-46167B836B99}">
-        <Condition>GPII_AUTOSTART="1"</Condition>
-        <RegistryValue Root="HKCU"
-                       Key="$(var.RegistryKeyPath)"
-                       Name="InstallPath"
-                       Type="string"
-                       Value="[INSTALLFOLDER]"
-                       KeyPath="yes"/>
-        <RegistryValue Root="HKCU"
-                       Key="$(var.RegistryKeyPath)"
-                       Name="Version"
-                       Type="string"
-                       Value="$(var.ProductVersion)"/>
-        <Shortcut Id="ExecutableStartupShortcut"
-                  Name="$(var.ProductName) QuickStrip"
-                  Target="[INSTALLFOLDER]\start.cmd"
-                  WorkingDirectory="INSTALLFOLDER"
-                  Icon="Morphic.ico"
-                  Show="minimized"
-                  />
       </Component>
     </DirectoryRef>
 
@@ -187,20 +176,71 @@
       </Component>
     </DirectoryRef>
 
-    <!-- We use asyncNoWait in order to not wait for their return codes -->
-    <CustomAction Id="RunGPII" ExeCommand="[INSTALLFOLDER]\start.cmd" Directory="INSTALLFOLDER" Return="asyncNoWait" />
-    <CustomAction Id="RunTrayIcon" ExeCommand="[INSTALLFOLDER]\windows\trayicon.exe morphic-app.exe -show" Directory="INSTALLFOLDER" Return="asyncNoWait" />
-    <CustomAction Id="KillApp" Directory="INSTALLFOLDER" Return="ignore" ExeCommand="&quot;[SystemFolder]taskkill.exe&quot; /F /IM &quot;morphic-app.exe&quot;" />
+    <DirectoryRef Id="MorphicWindowsDir" >
+      <Component Id="MorphicService" Guid="{43F9EB9C-40B8-4F28-B20E-83704DA2A6DB}">
+        <File Id="ServiceExe" Source="..\staging\windows\morphic-service.exe" KeyPath="yes"/>
+        <ServiceControl Id="StartService" Name="morphic-service" Start="install" Stop="both" Remove="uninstall" Wait="yes" />
+        <ServiceInstall Id="MorphicServiceInstall"
+                                  Name="morphic-service"
+                                  DisplayName="Morphic Service"
+                                  Description="Service for Morphic"
+                                  ErrorControl="normal"
+                                  Start="auto"
+                                  Type="ownProcess"
+                                  Arguments="--service --loglevel=DEBUG">
+        </ServiceInstall>
 
-    <!-- Install execute sequence of custom actions -->
-    <InstallExecuteSequence>
-      <Custom Action="KillApp" Before="InstallValidate" />
-      <Custom Action="RunGPII" After="InstallFinalize">
-        GPII_START_AFTER_INSTALLATION="1"
-      </Custom>
-      <Custom Action="RunTrayIcon" After="InstallFinalize">
-        GPII_START_AFTER_INSTALLATION="1"
-      </Custom>
+        <!-- Prevent language packs from being automatically removed -->
+        <RegistryKey Root="HKLM" Key="Software\Policies\Microsoft\Control Panel\International">
+            <RegistryValue Type="integer" Name="BlockCleanupOfUnusedPreinstalledLangPacks" Value="1" />
+        </RegistryKey>
+
+      </Component>
+    </DirectoryRef>
+
+    <CustomAction Id="Firewall"
+                  Directory="ProgramFilesFolder"
+                  ExeCommand='netsh advfirewall firewall add rule name="morphic" profile=any protocol=any enable=yes DIR=In program="[INSTALLFOLDER]windows\morphic-app.exe" Action=Allow'
+                  Impersonate="no" Execute="deferred" Return="check"  />
+
+    <CustomAction Id="FirewallRemove"
+                  Directory="ProgramFilesFolder"
+                  ExeCommand='netsh advfirewall firewall del rule name="morphic"'
+                  Impersonate="no" Execute="deferred" Return="asyncWait"  />
+
+    <CustomAction Id="ShutdownMorphic"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand='[INSTALLFOLDER]\windows\morphic-app.exe --shutdown'
+                  Return="asyncWait"  />
+
+    <!-- Prevent the language packs from being automatically removed -->
+    <CustomAction Id="DisableLPRemove"
+                  ExeCommand ='schtasks /Change /TN "Microsoft\Windows\MUI\LPRemove" /Disable'
+                  Directory="ProgramFilesFolder"
+                  Execute="deferred"
+                  Impersonate="no" Return="asyncWait" />
+
+    <!-- Make the service restart if it dies -->
+    <CustomAction Id="MorphicServiceRestart"
+                  ExeCommand ='cmd.exe /c "sc.exe failure morphic-service reset= 100 actions= restart/10000/restart/20000/restart/60000"'
+                  Directory="ProgramFilesFolder"
+                  Execute="deferred"
+                  Impersonate="no" Return="asyncWait" />
+    <!-- Make the filebeat service restart if it dies -->
+    <CustomAction Id="FilebeatServiceRestart"
+                  ExeCommand ='cmd.exe /c "sc.exe failure morphic-filebeat reset= 100 actions= restart/10000/restart/20000/restart/60000"'
+                  Directory="ProgramFilesFolder"
+                  Execute="deferred"
+                  Impersonate="no" Return="asyncWait" />
+
+
+      <InstallExecuteSequence>
+      <Custom Action="ShutdownMorphic" Before="InstallValidate">Installed</Custom>
+      <Custom Action="FirewallRemove" Before="InstallServices">REMOVE</Custom>
+      <Custom Action="Firewall" Before="InstallServices">NOT Installed</Custom>
+      <Custom Action="DisableLPRemove" After="InstallInitialize" >NOT REMOVE</Custom>
+      <Custom Action="MorphicServiceRestart" After="InstallInitialize" >NOT REMOVE</Custom>
+      <Custom Action="FilebeatServiceRestart" After="InstallInitialize" >NOT REMOVE</Custom>
     </InstallExecuteSequence>
 
     <!-- UI Configuration -->
@@ -215,9 +255,20 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)">
+          <Directory Id="MorphicWindowsDir" Name="windows" />
+          <?if $(var.gotDocuMorph)=1 ?>
+            <Directory Id="DocuMorph" Name="documorph">
+              <Merge Id="DocuMorph" SourceFile="..\documorph.msm" DiskId="1" Language="1033"/>
+            </Directory>
+          <?endif?>
           <?if $(var.gotFilebeat)=1 ?>
             <Directory Id="Filebeat" Name="filebeat">
               <Merge Id="Filebeat" SourceFile="..\filebeat.msm" DiskId="1" Language="1033"/>
+            </Directory>
+          <?endif?>
+          <?if $(var.gotSharex)=1 ?>
+            <Directory Id="ShareX" Name="sharex">
+              <Merge Id="ShareX" SourceFile="..\sharex.msm" DiskId="1" Language="1033"/>
             </Directory>
           <?endif?>
         </Directory>
