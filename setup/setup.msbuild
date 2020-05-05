@@ -21,7 +21,7 @@
   <!-- The list of WIX input files -->
   <ItemGroup>
     <WixCode Include="Product.wxs" />
-    <WixCode Include="UI_HST.wxs" />
+    <WixCode Include="UI.wxs" />
   </ItemGroup>
 
   <!-- The list of WIX after candle files -->
@@ -29,7 +29,7 @@
     <WixObject Include="$(TempDir)\Product.wixobj" />
     <WixObject Include="$(TempDir)\GPII.wixobj" />
     <WixObject Include="$(TempDir)\Themes.wixobj" />
-    <WixObject Include="$(TempDir)\UI_HST.wixobj" />
+    <WixObject Include="$(TempDir)\UI.wixobj" />
   </ItemGroup>
 
   <ItemGroup>
