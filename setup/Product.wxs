@@ -31,8 +31,6 @@
     <Property Admin="yes" Id="GPII_SHORTCUTS" Value="1" />
     <Property Admin="yes" Id="GPII_DESKTOP_SHORTCUTS" Value="1" />
     <Property Admin="yes" Id="GPII_START_MENU_SHORTCUTS" Value="1" />
-    <Property Admin="yes" Id="GPII_AUTOSTART" Value="1" />
-    <Property Admin="yes" Id="GPII_START_AFTER_INSTALLATION" Value="1" />
 
     <!-- Features -->
     <Feature Id="GPIIFeature" Title="$(var.ProductName)" ConfigurableDirectory="INSTALLFOLDER" AllowAdvertise="no" Absent="disallow">
