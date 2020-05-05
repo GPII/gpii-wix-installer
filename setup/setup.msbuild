@@ -16,8 +16,6 @@
     <GotDocuMorph Condition="Exists('../documorph.msm')">1</GotDocuMorph>
     <GotFilebeat>0</GotFilebeat>
     <GotFilebeat Condition="Exists('../filebeat.msm')">1</GotFilebeat>
-    <GotSharex>0</GotSharex>
-    <GotSharex Condition="Exists('../sharex.msm')">1</GotSharex>
   </PropertyGroup>
 
   <!-- The list of WIX input files -->
@@ -84,7 +82,7 @@
 
   <Target Name="WIX">
     <Message Text="@(WixCode)"/>
-    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotDocuMorph=$(GotDocuMorph) -dgotFilebeat=$(GotFilebeat) -dgotSharex=$(GotSharex) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
+    <Exec Command='"$(WixPath)candle" -dpublishDir=$(TempDir) -dversion=$(Version) -dgotDocuMorph=$(GotDocuMorph) -dgotFilebeat=$(GotFilebeat) -o $(TempDir)\ @(WixCode, &apos; &apos;)'
           ContinueOnError="false"
           WorkingDirectory="."
           />

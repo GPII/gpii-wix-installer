@@ -58,12 +58,6 @@
       </Feature>
     <?endif?>
 
-    <?if $(var.gotSharex)=1 ?>
-      <Feature Id="ShareX" Title="ShareX Portable" AllowAdvertise="no" Display="hidden" Level="1">
-        <MergeRef Id="ShareX"/>
-      </Feature>
-    <?endif?>
-
     <Feature Id="CleanUpFolders" Title="ProgramData folder removal" AllowAdvertise="no">
       <ComponentRef Id="MorphicFolderCleanup" />
       <ComponentRef Id="FilebeatFolderCleanup" />
@@ -264,11 +258,6 @@
           <?if $(var.gotFilebeat)=1 ?>
             <Directory Id="Filebeat" Name="filebeat">
               <Merge Id="Filebeat" SourceFile="..\filebeat.msm" DiskId="1" Language="1033"/>
-            </Directory>
-          <?endif?>
-          <?if $(var.gotSharex)=1 ?>
-            <Directory Id="ShareX" Name="sharex">
-              <Merge Id="ShareX" SourceFile="..\sharex.msm" DiskId="1" Language="1033"/>
             </Directory>
           <?endif?>
         </Directory>
