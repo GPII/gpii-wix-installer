@@ -2,22 +2,19 @@
 [WiX](http://wixtoolset.org/) based Windows installer for GPII
 
 ## Building
+
+This code is pulled and executed from [GPII/gpii-app's Installer.ps1 provisioning script](https://github.com/GPII/gpii-app/blob/master/provisioning/Installer.ps1) and can be called manually, but the latter is only for people that are familiar to this code.
+
 ### Requirements
-- A local copy of the [GPII/windows](https://github.com/GPII/windows) repository. You should be able to build the repository, so all requirements of building GPII/windows apply here as well.
-- [WiX Toolset v3.10](http://wixtoolset.org/)
+- [WiX Toolset v3.11.2](http://wixtoolset.org/)
 - [MSBuild Extension Pack v4](http://www.msbuildextensionpack.com/)
 
 Make sure MSBuild and the WiX folder are in the path.
 
 ### Staging
-- Build GPII/windows
-- Edit line 10 of [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd) and replace `C:\projects\gpii\windows` with the path of your local GPII/windows repository (**no** trailing backslash)
-- Run [`setup/build.cmd`](https://github.com/GPII/gpii-wix-installer/blob/master/setup/build.cmd)
+The `staging` folder is where the content is going to be placed before building the installer.
 
-Staging makes a private copy of the GPII/windows repository inside the `staging` folder and uses that for building the installer. Any files not needed (eg Git and Vagrant related folders) are excluded. 
-
-After running `build.cmd`, an MSI file can be found in the `output` folder.  
-Whenever there are changes to the local GPII/windows repository, rerun `build.cmd` to make a new installer.
+After running `setup.msbuild`, an MSI file can be found in the `output` folder.
 
 ## Unattended installation
 The installer is a standard MSI file and as such it can be also executed using `msiexec.exe` and supports all the [command-line options](https://msdn.microsoft.com/en-us/library/windows/desktop/aa367988(v=vs.85).aspx) available to `msiexec.exe`.
@@ -54,6 +51,5 @@ The list of possible properties include:
 | DESKTOP_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create any desktop shortcuts |
 | START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create any start menu shortcuts |
 | GPII_SHORTCUTS<br/>GPII_DESKTOP_SHORTCUTS<br/>GPII_START_MENU_SHORTCUTS | `0` or `1` **(Default)** | Whether or not to create shortcuts for the main GPII platform |
-| GPII_AUTOSTART | `0` **(Default)** or `1` | Whether or not to autostart GPII on Windows sign in |
 
 An exhaustive list of other properties can be found at the [Windows Installer Guide](https://msdn.microsoft.com/en-us/library/windows/desktop/aa370905(v=vs.85).aspx).
