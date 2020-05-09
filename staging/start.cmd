@@ -1,4 +1,4 @@
-echo off
-set NODE_ENV=gpii.config.all.development.dr.production
+@echo off
+set GPII_CLOUD_URL=https://flowmanager.prd.gcp.gpii.net
 cd windows
-start /min ..\node.exe gpii.js
+start /min morphic-app.exe
