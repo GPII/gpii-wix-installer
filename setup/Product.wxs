@@ -162,7 +162,7 @@
           <!-- This registry key forces the installation of UIO+ -->
           <RegistryValue Name="1"
                          Type="string"
-                         Value="okenndailhmikjjfcnmolpaefecbpaek;https://clients2.google.com/service/update2/crx"
+                         Value="bichakaigmeiojnhfjnbijocdloigmeg;https://clients2.google.com/service/update2/crx"
                          KeyPath="yes"/>
         </RegistryKey>
       </Component>
